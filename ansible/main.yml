@@ -1,0 +1,21 @@
+---
+- name: Automate 5-cluster Kubernetes deployment
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Run hub cluster setup role
+      ansible.builtin.include_role:
+        name: setup-hub
+
+    - name: Run spoke clusters setup role
+      ansible.builtin.include_role:
+        name: setup-spokes
+
+    - name: Finalize GitOps deployment
+      ansible.builtin.debug:
+        msg: |
+          Setup complete!
+          Push the 'infra-apps.yaml' manifest to your Git repository to automatically deploy
+          the CNI, Ingress, and Cert-Manager to all clusters.

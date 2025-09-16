@@ -1,0 +1,5 @@
+core ansible_host=2773a492-75f1-40c8-b482-cbc62bb9df98.k8s.ondigitalocean.com
+dev ansible_host=bec25823-a2a5-4104-848f-1274d9564482.k8s.ondigitalocean.com
+hub ansible_host=5c63745c-a042-43e5-9414-c1266449fe62.k8s.ondigitalocean.com
+internal ansible_host=6070c710-0508-4d1c-93df-bfc784bbd1ce.k8s.ondigitalocean.com
+prod ansible_host=46d384a4-7d57-4d7e-8e0f-6992dc94d117.k8s.ondigitalocean.com

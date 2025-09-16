@@ -1,0 +1,19 @@
+---
+- name: Run the OCM join command on all spoke clusters
+  ansible.builtin.shell: >
+    clusteradm join
+    --hub-token '{{ ocm_token }}'
+    --hub-apiserver https://{{ hostvars[groups['hub_cluster'][0]].ansible_host }}
+    --cluster-name '{{ item }}'
+  environment:
+    KUBECONFIG: "{{ hostvars[item].kubeconfig }}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['spoke_clusters'] }}"
+  register: join_output
+
+- name: Accept the cluster join request on the hub
+  ansible.builtin.command: >
+    clusteradm accept --clusters {{ item }}
+  delegate_to: "{{ groups['hub_cluster'][0] }}"
+  loop: "{{ groups['spoke_clusters'] }}"
+
