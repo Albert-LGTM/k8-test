@@ -20,33 +20,3 @@
   ansible.builtin.set_fact:
     ocm_token: "{{ (join_token_output.stdout | regex_search('token=(\\S+)', '\\1')) | first }}"
     cacheable: true
-
-
-- name: Ensure the Argo CD namespace exists on hub
-  kubernetes.core.k8s:
-    api_version: v1
-    kind: Namespace
-    name: argocd
-    state: present
-    kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
-  delegate_to: localhost
-
-- name: Add the Argo Helm repository
-  kubernetes.core.helm_repository:
-    name: argo
-    repo_url: "https://argoproj.github.io/argo-helm"
-  delegate_to: localhost
-
-- name: Install Argo CD via Helm
-  kubernetes.core.helm:
-    name: argocd-server
-    chart_ref: argo/argo-cd
-    release_namespace: argocd
-    create_namespace: true
-    values:
-      server:
-        service:
-          type: LoadBalancer
-    kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
-  delegate_to: localhost
-

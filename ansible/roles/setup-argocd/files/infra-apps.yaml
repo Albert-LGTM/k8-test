@@ -1,19 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: service-applications
+  name: infra-applications
   namespace: argocd
 spec:
   generators:
     - clusterDecisionResource:
-        configMapRef: ocm-placement-generator
+        configMapRef: hub-cluster-info
         labelSelector:
-          matchLabels:
-            cluster.open-cluster-management.io/placement: service-placement
+          matchExpressions:
+            - key: open-cluster-management.io/cluster-name
+              operator: NotIn
+              values:
+                - hub
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-{{appName}}'
+      name: '{{name}}-infra'
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
       annotations:
@@ -25,10 +28,10 @@ spec:
       source:
         repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: HEAD
-        path: 'gitops/apps/services/{{appName}}'
+        path: gitops/infra/manifests
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{appName}}'
+        namespace: argocd
       syncPolicy:
         automated:
           prune: true

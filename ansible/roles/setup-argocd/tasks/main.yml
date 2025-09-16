@@ -1,0 +1,69 @@
+---
+
+
+- name: Ensure the Argo CD namespace exists on hub
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: argocd
+    state: present
+    kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+  delegate_to: localhost
+
+- name: Add the Argo Helm repository
+  kubernetes.core.helm_repository:
+    name: argo
+    repo_url: "https://argoproj.github.io/argo-helm"
+  delegate_to: localhost
+
+- name: Install Argo CD via Helm
+  kubernetes.core.helm:
+    name: argocd-server
+    chart_ref: argo/argo-cd
+    release_namespace: argocd
+    create_namespace: true
+    values:
+      server:
+        service:
+          type: LoadBalancer
+    kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+  delegate_to: localhost
+
+
+# - name: Create Argo CD namespace on hub
+#   kubernetes.core.k8s:
+#     api_version: v1
+#     kind: Namespace
+#     name: "{{ argocd_namespace }}"
+#     kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+#   register: ns_result
+
+# - name: Install Argo CD on hub
+#   kubernetes.core.k8s:
+#     state: present
+#     kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+#     src: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+- name: Install OCM Argo CD add-on
+  command: clusteradm install hub-addon --names argocd
+  environment:
+    KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+  register: result
+  failed_when: "'cannot re-use a name' not in result.stderr and result.rc != 0"
+  changed_when: "'already exists' not in result.stdout"
+
+
+- name: Enable Argo CD add-on on managed clusters
+  command: clusteradm addon enable --names argocd --clusters {{ item | join(',') }}
+  loop:
+    - "{{ managed_clusters }}"
+  environment:
+    kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+  register: addon_result
+
+- name: Apply Argo CD ApplicationSet manifest (pull-model)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+    state: present
+    namespace: "{{ argocd_namespace }}"
+    src: "{{ role_path }}/files/{{ application_set_file }}"
