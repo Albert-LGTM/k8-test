@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: service-applications
+  namespace: argocd
+spec:
+  # This generator will find all directories under gitops/apps/services
+  generators:
+  - git:
+      repoURL: https://github.com/Albert-LGTM/k8-test.get
+      revision: HEAD
+      directories:
+      - path: gitops/apps/services/*
+  
+  # This template creates an Application for each service directory found by the generator
+  template:
+    metadata:
+      # The name of the application will be the name of the directory (e.g., service-a, service-b)
+      name: "{{path.basename}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Albert-LGTM/k8-test.get
+        targetRevision: HEAD
+        # The path to the specific service's manifests
+        path: "{{path}}"
+      destination:
+        # You'll need to specify a destination cluster. You could use a list generator or another method to target multiple clusters.
+        server: https://kubernetes.default.svc
+        namespace: default  # Or another namespace where you want the service to run
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
