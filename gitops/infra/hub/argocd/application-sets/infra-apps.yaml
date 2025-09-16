@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infra-applications
+  namespace: argocd
+spec:
+  # The cluster decision resource generator fetches the list of managed clusters from OCM.
+  generators:
+  - clusterDecisionResource:
+      labelSelector:
+        matchExpressions:
+          # Select all clusters that are managed by the hub.
+          - key: "open-cluster-management.io/cluster-name"
+            operator: NotIn
+            values:
+            - hub
+      # The decision resource references OCM's Placement API.
+      configMapRef: hub-cluster-info
+
+  template:
+    metadata:
+      name: "{{name}}-infra"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Albert-LGTM/k8-test.get
+        targetRevision: HEAD
+        # The path to the HelmRelease manifests.
+        path: gitops/infra/manifests/
+      destination:
+        server: "{{server}}"
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
