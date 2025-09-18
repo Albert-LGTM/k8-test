@@ -24,15 +24,15 @@ spec:
       project: default
       source:
         repoURL: 'https://cowboysysop.github.io/charts/'
-        chart: whoami
         targetRevision: 6.0.0
         helm:
+          chart: whoami
           values: |
             ingress:
               enabled: true
+              ingressClassName: traefik
               annotations:
                 traefik.ingress.kubernetes.io/router.entrypoints: web
-              className: traefik
               hosts:
                 - host: whoami.test.local
                   paths:
@@ -44,5 +44,6 @@ spec:
       syncPolicy:
         automated:
           prune: true
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true
