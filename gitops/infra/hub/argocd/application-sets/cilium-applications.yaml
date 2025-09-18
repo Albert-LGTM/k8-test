@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: guestbook-app-set
+  name: cilium-applications
   namespace: argocd
 spec:
   generators:
@@ -9,11 +9,11 @@ spec:
         configMapRef: ocm-placement-generator
         labelSelector:
           matchLabels:
-            cluster.open-cluster-management.io/placement: app-placement
+            cluster.open-cluster-management.io/placement: all-managed-clusters
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-guestbook-app'
+      name: '{{name}}-cilium'
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
       annotations:
@@ -23,14 +23,28 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/argoproj/argocd-example-apps.git'
-        targetRevision: HEAD
-        path: guestbook
+        repoURL: 'https://helm.cilium.io/'
+        chart: cilium
+        targetRevision: 'v1.18.1'
+        helm:
+          values: |
+            installCRDs: true
+            ipam:
+              mode: kubernetes
+            hubble:
+              enabled: true
+            relay:
+              enabled: true
+            ui:
+              enabled: true
+            envoy:
+              enabled: false
       destination:
         server: https://kubernetes.default.svc
-        namespace: guestbook
+        namespace: kube-system
       syncPolicy:
         automated:
           prune: true
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true

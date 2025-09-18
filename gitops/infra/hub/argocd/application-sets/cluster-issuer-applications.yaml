@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-issuer-applications
+  namespace: argocd
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: ocm-placement-generator
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: all-managed-clusters
+        requeueAfterSeconds: 30
+  template:
+    metadata:
+      name: '{{name}}-cluster-issuer'
+      labels:
+        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
+      annotations:
+        argocd.argoproj.io/skip-reconcile: "true"
+        apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
+        apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: "https://github.com/Albert-LGTM/k8-test.git"
+        targetRevision: HEAD
+        path: gitops/infra/manifests/cert-manager/cluster-issuer
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: cert-manager
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

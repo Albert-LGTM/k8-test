@@ -1,0 +1,15 @@
+
+Do labels:
+ kubectl --kubeconfig=ansible/kubeconfig/hub-kubeconfig.yaml label managedcluster internal cluster.open-cluster-management.io/placement=service-placement
+
+Create namespaces:
+kubectl --kubeconfig=ansible/kubeconfig/dev-kubeconfig.yaml create namespace traefik
+
+
+Add repo? 
+argocd add repo
+
+
+apply crds for traefik: 
+kubectl --kubeconfig=ansible/kubeconfig/dev-kubeconfig.yaml apply -k "github.com/traefik/traefik-helm-chart/traefik/crds?ref=v37.1.1"
+kubectl --kubeconfig=ansible/kubeconfig/internal-kubeconfig.yaml apply -f https://raw.githubusercontent.com/argoproj/applicationset/stable/manifests/install.yaml

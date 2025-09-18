@@ -23,6 +23,8 @@
     release_namespace: argocd
     create_namespace: true
     values:
+      applicationset:
+        enabled: true
       server:
         service:
           type: LoadBalancer
@@ -67,3 +69,6 @@
     state: present
     namespace: "{{ argocd_namespace }}"
     src: "{{ role_path }}/files/{{ application_set_file }}"
+
+
+#clusteradm addon enable --names argocd --clusters dev,prod,internal,core --kubeconfig ansible/kubeconfig/hub-kubeconfig.yaml

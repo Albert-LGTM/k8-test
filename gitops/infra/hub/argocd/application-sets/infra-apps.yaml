@@ -4,31 +4,120 @@ metadata:
   name: infra-applications
   namespace: argocd
 spec:
+  # The generator remains the same, providing the cluster names.
   generators:
-  - clusterDecisionResource:
-      configMapRef: hub-cluster-info
-      labelSelector:
-        matchExpressions:
-          - key: "open-cluster-management.io/cluster-name"
-            operator: NotIn
-            values:
-            - hub
+    - list:
+        elements:
+          - name: dev
+          - name: internal
+          - name: prod
+  # Change 'template' to 'templates' to define a list of applications to be generated.
+  templates:
+    # 1. Cilium Application Template (existing)
+    - metadata:
+        name: '{{name}}-cilium'
+        labels:
+          apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
+        annotations:
+          argocd.argoproj.io/skip-reconcile: 'true'
+          apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
+          apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
+      spec:
+        project: default
+        source:
+          repoURL: 'https://helm.cilium.io/'
+          chart: cilium
+          targetRevision: '1.18.1'
+          helm:
+            values: |
+              ipam:
+                mode: kubernetes
+              hubble:
+                enabled: true
+                relay:
+                  enabled: true
+                ui:
+                  enabled: true
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: kube-system
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+          syncOptions:
+            - CreateNamespace=true
 
-  template:
-    metadata:
-      name: "{{name}}-infra"
-    spec:
-      project: default
-      source:
-        repoURL: https://github.com/Albert-LGTM/k8-test.git
-        targetRevision: HEAD
-        path: infra/manifests
-      destination:
-        server: "{{server}}"
-        namespace: argocd
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-        - CreateNamespace=true
+    # 2. Cert-Manager Application Template
+    - metadata:
+        name: '{{name}}-cert-manager'
+        labels:
+          apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
+        annotations:
+          argocd.argoproj.io/skip-reconcile: 'true'
+          apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
+          apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
+      spec:
+        project: default
+        source:
+          repoURL: 'https://charts.jetstack.io/'
+          chart: cert-manager
+          targetRevision: 'v1.15.0' # Use a recent stable version
+          helm:
+            # This is crucial for cert-manager to work.
+            # It installs the required Custom Resource Definitions (CRDs).
+            releaseName: cert-manager
+            values: |
+              installCRDs: true
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: cert-manager
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+          syncOptions:
+            - CreateNamespace=true
+
+    # 3. Traefik Application Template
+    - metadata:
+        name: '{{name}}-traefik'
+        labels:
+          apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
+        annotations:
+          argocd.argoproj.io/skip-reconcile: 'true'
+          apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
+          apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
+      spec:
+        project: default
+        source:
+          repoURL: 'https://helm.traefik.io/traefik'
+          chart: traefik
+          targetRevision: '28.1.1' # Use a recent stable version
+          helm:
+            values: |
+              ports:
+                web:
+                  redirectTo: websecure
+                websecure:
+                  # This port is used for Traefik entrypoint
+                  # It must be exposed on the node
+                  # In many cloud providers, you would use a LoadBalancer service
+                  # which you can configure in Traefik to expose this port
+                  # For example, service.annotations:
+                  #   service.beta.kubernetes.io/aws-load-balancer-type: 'nlb'
+                  #   ...
+                  port: 443
+              # Set up a Service of type LoadBalancer to expose Traefik
+              # on a public IP address.
+              service:
+                type: LoadBalancer
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: traefik
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+          syncOptions:
+            - CreateNamespace=true

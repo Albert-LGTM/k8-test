@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: traefik-applications
+  namespace: argocd
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: ocm-placement-generator
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: all-managed-clusters
+        requeueAfterSeconds: 30
+  template:
+    metadata:
+      name: '{{name}}-traefik'
+      labels:
+        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
+      annotations:
+        argocd.argoproj.io/skip-reconcile: 'true'
+        apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
+        apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: 'https://helm.traefik.io/traefik'
+        chart: traefik
+        targetRevision: '37.1.1'
+        helm:
+          values: |
+            service:
+              type: LoadBalancer
+            entryPoints:
+              web:
+                http:
+                  redirections:
+                    entryPoint:
+                      to: websecure
+                      scheme: https
+              websecure:
+                http:
+                  tls: {}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: traefik
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
