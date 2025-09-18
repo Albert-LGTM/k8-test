@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: cilium-applications
+  name: traefik-app-set
   namespace: argocd
 spec:
   generators:
@@ -13,7 +13,7 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-cilium'
+      name: '{{name}}-traefik-app'
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
       annotations:
@@ -23,12 +23,12 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'https://helm.cilium.io/'
-        chart: cilium
-        targetRevision: 1.18.2
+        repoURL: 'https://github.com/traefik/traefik-helm-chart.git'
+        targetRevision: HEAD
+        path: traefik
       destination:
         server: https://kubernetes.default.svc
-        namespace: kube-system
+        namespace: traefik
       syncPolicy:
         automated:
           prune: true

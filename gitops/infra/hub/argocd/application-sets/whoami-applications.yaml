@@ -30,7 +30,7 @@ spec:
           values: |
             ingressRoute:
               enabled: true
-              matchRule: Host(`whoami.your-domain.com`)
+              matchRule: Host(`whoami.test.local`)
               entryPoints: ["web"]
       destination:
         server: https://kubernetes.default.svc
