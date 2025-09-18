@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: whoami-applications
+  name: whoami-app-set
   namespace: argocd
 spec:
   generators:
@@ -13,25 +13,30 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-whoami'
+      name: '{{name}}-whoami-app'
       labels:
-        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
+        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
       annotations:
-        argocd.argoproj.io/skip-reconcile: "true"
+        argocd.argoproj.io/skip-reconcile: 'true'
         apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
         apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
     spec:
       project: default
       source:
-        repoURL: "https://github.com/Albert-LGTM/k8-test.git"
-        targetRevision: HEAD
-        path: gitops/apps/services/whoami
+        repoURL: 'https://cowboysysop.github.io/charts/'
+        chart: whoami
+        targetRevision: 6.0.0
+        helm:
+          values: |
+            ingressRoute:
+              enabled: true
+              matchRule: Host(`whoami.your-domain.com`)
+              entryPoints: ["web"]
       destination:
         server: https://kubernetes.default.svc
         namespace: whoami
       syncPolicy:
         automated:
           prune: true
-          selfHeal: true
         syncOptions:
           - CreateNamespace=true
