@@ -28,10 +28,16 @@ spec:
         targetRevision: 6.0.0
         helm:
           values: |
-            ingressRoute:
+            ingress:
               enabled: true
-              matchRule: Host(`whoami.test.local`)
-              entryPoints: ["web"]
+              annotations:
+                traefik.ingress.kubernetes.io/router.entrypoints: web
+              className: traefik
+              hosts:
+                - host: whoami.test.local
+                  paths:
+                    - path: /
+                      pathType: Prefix
       destination:
         server: https://kubernetes.default.svc
         namespace: whoami
