@@ -25,7 +25,7 @@ spec:
       source:
         repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: HEAD
-        path: gitops/infra/clusters/cert-manager/cluster-issuer/cluster-issuer
+        path: gitops/infra/clusters/cert-manager/cluster-issuer
       destination:
         server: https://kubernetes.default.svc
         namespace: cert-manager # We can use any namespace since ClusterIssuer is not namespaced
