@@ -1,15 +1,10 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
-  name: letsencrypt
-  namespace: cert-manager
+  name: ca-issuer
 spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: albert@cyberpartners.dk
-    privateKeySecretRef:
-      name: letsencrypt-private-key
-    solvers:
-      - http01:
-          ingress:
-            class: traefik
+  ca:
+    # This secret must already exist and contain your CA cert and key.
+    # You will need to create this manually on the cluster first.
+    # Example: kubectl create secret tls my-ca-secret --cert=ca.pem --key=ca-key.pem -n cert-manager
+    secretName: my-ca-secret

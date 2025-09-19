@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: whoami-tls
+  namespace: whoami
+spec:
+  secretName: whoami-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  isCA: false
+  commonName: whoami.example.com
+  dnsNames:
+  - whoami.example.com
+  # This issuer name must match the ClusterIssuer you created
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
