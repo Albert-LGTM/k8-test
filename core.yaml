@@ -12,7 +12,7 @@ spec:
               operator: NotIn
               values:
                 - hub
-                - indernal
+                - internal
                 - dev 
                 - prod
 
