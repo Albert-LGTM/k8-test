@@ -8,9 +8,9 @@ spec:
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   isCA: false
-  commonName: whoami.local
+  commonName: whoami.cyberpartners.dk
   dnsNames:
-    - whoami.local
+    - whoami.cyberpartners.dk
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-production
     kind: ClusterIssuer
