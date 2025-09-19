@@ -1,0 +1,21 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.cyberpartners.dk`)
+      kind: Rule
+      services:
+        - name: grafana
+          port: 3000
+    - match: Host(`prometheus.cyberpartners.dk`)
+      kind: Rule
+      services:
+        - name: prometheus
+          port: 9090
+  tls:
+    secretName: monitoring-tls
