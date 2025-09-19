@@ -5,24 +5,33 @@ metadata:
   namespace: argocd
 spec:
   generators:
-    - list:
-        elements:
-          - cluster: https://kubernetes.default.svc
-            namespace: monitoring
-            name: monitoring-core
+  - clusterDecisionResource:
+      configMapRef: ocm-placement-generator
+      labelSelector:
+        matchLabels:
+          cluster.open-cluster-management.io/placement: core
+      requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}'
+      name: '{{name}}-monitoring'
+      labels:
+        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
+      annotations:
+        argocd.argoproj.io/skip-reconcile: "true"
+        apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
+        apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
     spec:
       project: default
       source:
-        repoURL: https://github.com/Albert-LGTM/k8-test.git
+        repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: HEAD
         path: gitops/apps/monitoring/overlays/core
       destination:
-        server: '{{cluster}}'
-        namespace: '{{namespace}}'
+        server: https://kubernetes.default.svc
+        namespace: monitoring
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
