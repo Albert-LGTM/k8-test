@@ -23,15 +23,9 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'https://cowboysysop.github.io/charts/'
-        chart: whoami
-        targetRevision: 6.0.0
-        helm:
-          values: |
-            ingressRoute:
-              enabled: true
-              matchRule: Host(`whoami.test.local`)
-              entryPoints: ["web"]
+        repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
+        targetRevision: HEAD
+        path: gitops/apps/services/whoami
       destination:
         server: https://kubernetes.default.svc
         namespace: whoami
