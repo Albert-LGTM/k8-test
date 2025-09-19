@@ -1,23 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: whoami-app-set
+  name: whoami-applications
   namespace: argocd
 spec:
   generators:
-    - clusterDecisionResource:
-        configMapRef: ocm-placement-generator
-        labelSelector:
-          matchLabels:
-            cluster.open-cluster-management.io/placement: all-managed-clusters
-        requeueAfterSeconds: 30
+  - clusterDecisionResource:
+      configMapRef: ocm-placement-generator
+      labelSelector:
+        matchLabels:
+          cluster.open-cluster-management.io/placement: all-managed-clusters
+      requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-whoami-app'
+      name: '{{name}}-whoami'
       labels:
-        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
+        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
       annotations:
-        argocd.argoproj.io/skip-reconcile: 'true'
+        argocd.argoproj.io/skip-reconcile: "true"
         apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
         apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
     spec:
@@ -32,5 +32,6 @@ spec:
       syncPolicy:
         automated:
           prune: true
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true

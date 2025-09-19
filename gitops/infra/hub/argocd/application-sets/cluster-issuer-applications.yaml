@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: ca-issuer-applications
+  name: lets-encrypt-issuer-applications
   namespace: argocd
 spec:
   generators:
@@ -13,7 +13,7 @@ spec:
       requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-ca-issuer'
+      name: '{{name}}-lets-encrypt-issuer'
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
       annotations:
@@ -25,10 +25,10 @@ spec:
       source:
         repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: HEAD
-        path: gitops/infra/cert-manager/cluster-issuer
+        path: gitops/infra/cert-manager
       destination:
         server: https://kubernetes.default.svc
-        namespace: cert-manager # We can use any namespace since ClusterIssuer is not namespaced
+        namespace: cert-manager
       syncPolicy:
         automated:
           prune: true
