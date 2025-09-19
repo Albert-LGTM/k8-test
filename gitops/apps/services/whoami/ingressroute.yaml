@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`whoami.local`)
+    - match: Host(`whoami.cyberpartners.dk`)
       kind: Rule
       services:
         - name: whoami
