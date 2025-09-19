@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: ca-issuer
+spec:
+  ca:
+    # This secret must already exist and contain your CA cert and key.
+    # You will need to create this manually on the cluster first.
+    # Example: kubectl create secret tls my-ca-secret --cert=ca.pem --key=ca-key.pem -n cert-manager
+    secretName: my-ca-secret
