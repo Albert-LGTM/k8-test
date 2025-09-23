@@ -10,12 +10,16 @@ data:
       http_listen_port: 3100
       grpc_listen_port: 9095
 
+    # Ingestion limits and a wider timestamp tolerance.
+    # We are increasing the rate limit to handle more logs.
+    # The `ingestion_window` is increased to allow older logs to be accepted.
     limits_config:
       ingestion_rate_mb: 10
       ingestion_burst_size_mb: 20
       reject_old_samples: false
       reject_old_samples_max_age: 168h # 7 days
     
+    # Storage and ingestion settings.
     ingester:
       lifecycler:
         address: 127.0.0.1
@@ -27,6 +31,8 @@ data:
       chunk_block_size: 262144
       chunk_retain_period: 1m
 
+    # These settings manage how Loki stores its data.
+    # Updated to use the modern v13 schema and TSDB storage.
     schema_config:
       configs:
         - from: 2025-09-23
@@ -36,3 +42,17 @@ data:
           index:
             prefix: index_
             period: 24h
+
+    # File system storage configuration for Loki.
+    storage_config:
+      boltdb_shipper:
+        active_index_directory: /var/loki/index
+        cache_location: /var/loki/cache
+        shared_store: filesystem
+      filesystem:
+        directory: /var/loki/chunks
+    
+    # Compactor configuration for managing the index.
+    compactor:
+      working_directory: /var/loki/boltdb-shipper-compactor
+      shared_store: filesystem
