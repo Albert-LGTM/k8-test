@@ -60,7 +60,7 @@ data:
     // This component writes logs to the Loki API.
     loki.write "loki_push" {
       endpoint {
-        url = "http://loki:3100/loki/api/v1/push"
+        url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
       }
     }
     
@@ -73,6 +73,6 @@ data:
     // This component writes Prometheus metrics to the Prometheus remote write endpoint.
     prometheus.remote_write "prom_push" {
       endpoint {
-        url = "http://prometheus:9090/api/v1/write"
+        url = "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
       }
     }
