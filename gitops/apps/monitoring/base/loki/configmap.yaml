@@ -42,17 +42,3 @@ data:
           index:
             prefix: index_
             period: 24h
-
-    # File system storage configuration for Loki.
-    storage_config:
-      boltdb_shipper:
-        active_index_directory: /var/loki/index
-        cache_location: /var/loki/cache
-        shared_store: filesystem
-      filesystem:
-        directory: /var/loki/chunks
-    
-    # Compactor configuration for managing the index.
-    compactor:
-      working_directory: /var/loki/boltdb-shipper-compactor
-      shared_store: filesystem
