@@ -29,14 +29,16 @@ spec:
             httpGet:
               path: /ready
               port: http-loki
-            initialDelaySeconds: 15
-            periodSeconds: 10
+            initialDelaySeconds: 45
+            periodSeconds: 15
+            timeoutSeconds: 5
           livenessProbe:
             httpGet:
               path: /metrics
               port: http-loki
             initialDelaySeconds: 60
             periodSeconds: 30
+            timeoutSeconds: 5
           resources:
             requests:
               cpu: 100m
