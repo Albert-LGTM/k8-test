@@ -5,18 +5,24 @@ metadata:
   namespace: monitoring
 data:
   config.alloy: |
+    // This component discovers all pods in the Kubernetes cluster.
     discovery.kubernetes "pods" {
       role = "pod"
     }
     
-    loki.source.kubernetes "pod_logs" {
-      // Use the output of the discovery component as the targets to scrape from.
+    // This component applies relabeling rules to the discovered pods.
+    loki.relabel "pod_relabel" {
       targets = discovery.kubernetes.pods.targets
-    
-      relabel_rules {
+      rule {
         labeldrop = ["__meta_kubernetes_pod_container_id"]
         labelmap  = "__meta_kubernetes_pod_label_(.*)"
       }
+    }
+    
+    // This component scrapes logs directly from Kubernetes pods.
+    loki.source.kubernetes "pod_logs" {
+      // Use the relabeled targets as the source for log scraping.
+      targets = loki.relabel.pod_relabel.targets
       
       // All logs from this source will be processed by the loki_pipeline.
       forward_to = [loki.process.loki_pipeline.receiver]
@@ -57,10 +63,10 @@ data:
     
     // This component receives telemetry data via the OTLP protocol.
     otelcol.receiver.otlp "otel_receiver" {
-      grpc = {
+      grpc {
         endpoint = "0.0.0.0:4317",
       }
-      http = {
+      http {
         endpoint = "0.0.0.0:4318",
       }
       
