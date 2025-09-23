@@ -2,6 +2,7 @@ resources:
   - grafana/configmap.yaml
   - grafana/deployment.yaml
   - grafana/service.yaml
+  - grafana/grafana-admin.yaml
   - prometheus/configmap.yaml
   - prometheus/deployment.yaml
   - prometheus/service.yaml
