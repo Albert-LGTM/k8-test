@@ -6,5 +6,6 @@ resources:
   - prometheus/configmap.yaml
   - prometheus/deployment.yaml
   - prometheus/service.yaml
+  - prometheus/rbac.yaml
   - certificate.yaml
   - ingressroute.yaml

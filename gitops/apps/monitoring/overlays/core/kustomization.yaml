@@ -6,5 +6,6 @@ resources:
 
 patches:
   - path: patch-values.yaml
+  - path: patch-deployments.yaml
 
 namespace: monitoring
