@@ -4,7 +4,6 @@ metadata:
   name: prometheus
   namespace: monitoring
 ---
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -22,7 +21,10 @@ rules:
   resources:
   - ingresses
   verbs: ["get", "list", "watch"]
----
+- apiGroups: ["discovery.k8s.io"]
+  resources:
+  - endpointslices
+  verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
