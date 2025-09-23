@@ -5,19 +5,20 @@ metadata:
   namespace: monitoring
 data:
   config.alloy: |
-    discovery.kubernetes.pod "pods" {
-      role = "endpoints"
+    discovery.kubernetes "pods" {
+      role = "pod"
     }
     
     loki.source.kubernetes.pod "pod_logs" {
       // Use the output of the discovery component as the targets to scrape from.
-      targets = discovery.kubernetes.pod.pods.targets
+      targets = discovery.kubernetes.pods.targets
     
       relabel_rules {
         labeldrop = ["__meta_kubernetes_pod_container_id"]
         labelmap  = "__meta_kubernetes_pod_label_(.*)"
       }
       
+      // All logs from this source will be processed by the loki_pipeline.
       forward_to = [loki.process.loki_pipeline.receiver]
     }
     
@@ -43,7 +44,7 @@ data:
     
     // This component scrapes Prometheus metrics from the discovered pods.
     prometheus.scrape "pod_metrics" {
-      targets    = discovery.kubernetes.pod.pods.targets
+      targets    = discovery.kubernetes.pods.targets
       forward_to = [prometheus.remote_write.prom_push.receiver]
     }
     
