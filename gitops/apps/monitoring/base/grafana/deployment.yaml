@@ -12,9 +12,6 @@ spec:
     metadata:
       labels:
         app: grafana
-      annotations:
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '3000'
     spec:
       containers:
         - name: grafana
@@ -25,5 +22,9 @@ spec:
                 secretKeyRef:
                   name: grafana-admin
                   key: password
+            - name: GF_METRICS_ENABLED
+              value: "true"
+            - name: GF_METRICS_PORT
+              value: "3000"
           ports:
             - containerPort: 3000
