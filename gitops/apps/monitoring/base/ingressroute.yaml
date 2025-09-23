@@ -17,5 +17,10 @@ spec:
       services:
         - name: prometheus
           port: 9090
+    - match: Host(`loki.cyberpartners.dk`)
+      kind: Rule
+      services:
+        - name: loki
+          port: 3100
   tls:
     secretName: monitoring-tls
