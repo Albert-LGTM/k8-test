@@ -64,10 +64,10 @@ data:
     // This component receives telemetry data via the OTLP protocol.
     otelcol.receiver.otlp "otel_receiver" {
       grpc {
-        endpoint = "0.0.0.0:4317",
+        endpoint = "0.0.0.0:4317"
       }
       http {
-        endpoint = "0.0.0.0:4318",
+        endpoint = "0.0.0.0:4318"
       }
       
       output {
