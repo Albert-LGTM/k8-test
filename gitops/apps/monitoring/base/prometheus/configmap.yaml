@@ -7,6 +7,7 @@ data:
   prometheus.yml: |
     global:
       scrape_interval: 15s
+
     scrape_configs:
       - job_name: 'kubernetes-nodes'
         kubernetes_sd_configs:
@@ -16,7 +17,7 @@ data:
             target_label: __address__
             regex: (.*):10250
             replacement: $1:10250
-            
+
       - job_name: 'kubernetes-services'
         kubernetes_sd_configs:
           - role: endpointslice
@@ -40,3 +41,7 @@ data:
             action: replace
             target_label: __metrics_path__
             regex: (.+)
+
+    remote_write:
+      - url: "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+        honor_timestamps: false

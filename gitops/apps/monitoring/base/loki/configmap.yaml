@@ -24,6 +24,7 @@ data:
         ring:
           kvstore:
             store: inmemory
+          replication_factor: 1
         final_sleep: 0s
       chunk_idle_period: 3m
       chunk_block_size: 262144
