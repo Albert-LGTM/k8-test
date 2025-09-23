@@ -7,5 +7,11 @@ resources:
   - prometheus/deployment.yaml
   - prometheus/service.yaml
   - prometheus/rbac.yaml
+  - loki/configmap.yaml
+  - loki/deployment.yaml
+  - loki/service.yaml
+  - promtail/configmap.yaml
+  - promtail/daemonset.yaml
+  - promtail/rbac.yaml
   - certificate.yaml
-  - ingressroute.yaml
+  - ingressroute.yamlc
