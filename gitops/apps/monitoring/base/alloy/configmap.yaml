@@ -3,41 +3,60 @@ kind: ConfigMap
 metadata:
   name: alloy-config
   namespace: monitoring
-  labels:
-    app: alloy
 data:
   config.alloy: |
-    loki.write "loki_push" {
-      endpoint {
-        url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
-      }
+    discovery.kubernetes.pods "pods" {
+      role = "endpoints"
     }
-
-    discovery.kubernetes "pods" {
-      role = "pod"
-    }
-
+    
     loki.source.kubernetes "pod_logs" {
-      targets = discovery.kubernetes.pods.targets
-      forward_to = [loki.write.loki_push.receiver]
-
+      targets = discovery.kubernetes.pods.pods.targets
+    
       relabel_rules {
         labeldrop = ["__meta_kubernetes_pod_container_id"]
         labelmap  = "__meta_kubernetes_pod_label_(.*)"
       }
-
-      relabel_rules {
-        source_labels = ["__meta_kubernetes_pod_container_name"]
-        target_label  = "container"
+      
+      forward_to = [loki.write.loki_push.receiver]
+    }
+    
+    loki.write "loki_push" {
+      endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
       }
-
-      relabel_rules {
-        source_labels = ["__meta_kubernetes_pod_namespace"]
-        target_label  = "namespace"
+    }
+    
+    loki.process "loki_pipeline" {
+      forward_to = [loki.write.loki_push.receiver]
+      
+      stage {
+        drop {
+          drop = true
+          labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_managed_by"]
+        }
       }
-
-      relabel_rules {
-        source_labels = ["__meta_kubernetes_pod_name"]
-        target_label  = "pod"
+    }
+    
+    prometheus.scrape "pod_metrics" {
+      targets    = discovery.kubernetes.pods.pods.targets
+      forward_to = [prometheus.remote_write.prom_push.receiver]
+    }
+    
+    prometheus.remote_write "prom_push" {
+      endpoint {
+        url = "http://prometheus:9090/api/v1/write"
+      }
+    }
+    
+    otelcol.receiver.otlp "otel_receiver" {
+      grpc = {
+        endpoint = "0.0.0.0:4317"
+      }
+      http = {
+        endpoint = "0.0.0.0:4318"
+      }
+      
+      output {
+        logs = [loki.process.loki_pipeline.receiver]
       }
     }
