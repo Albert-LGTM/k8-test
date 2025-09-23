@@ -15,31 +15,33 @@ data:
           - source_labels: [__address__]
             target_label: __address__
             regex: (.*):10250
-            replacement: ${1}:10250
+            replacement: $1:10250
             
-      # Job to scrape Kubernetes pods via endpoints
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
-          - role: endpoints
+          - role: pod
         relabel_configs:
-          # Keep endpoints with prometheus.io/scrape=true annotation
-          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+          # Keep pods with the prometheus.io/scrape annotation
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
             action: keep
             regex: true
-          # Extract port from service annotation, if present
-          - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+          # Extract port from pod annotation and replace the target address
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
             action: replace
-            target_label: __address__
             regex: ([^:]+)(?::\d+)?;(\d+)
             replacement: $1:$2
-          # Use the service name as the instance label
-          - source_labels: [__meta_kubernetes_service_name]
-            target_label: instance
-          # Set the job name to the service's app label
+            target_label: __address__
+          # Set job name from pod app label, or a default
           - source_labels: [__meta_kubernetes_pod_label_app]
+            action: replace
             target_label: job
-
-      # Add a job for the Prometheus server itself (optional but good practice)
-      - job_name: 'prometheus'
-        static_configs:
-          - targets: ['localhost:9090']
+            regex: (.+)
+          # Set the instance label to the pod's name
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: instance
+          # Use the annotated metrics path if it exists
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
