@@ -10,8 +10,8 @@ resources:
   - loki/configmap.yaml
   - loki/deployment.yaml
   - loki/service.yaml
-  - promtail/configmap.yaml
-  - promtail/daemonset.yaml
-  - promtail/rbac.yaml
+  - alloy/configmap.yaml
+  - alloy/daemonset.yaml
+  - alloy/rbac.yaml
   - certificate.yaml
   - ingressroute.yaml

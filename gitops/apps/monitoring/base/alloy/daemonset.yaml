@@ -1,29 +1,31 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: promtail
+  name: alloy
+  namespace: monitoring
   labels:
-    app: promtail
+    app: alloy
 spec:
   selector:
     matchLabels:
-      app: promtail
+      app: alloy
   template:
     metadata:
       labels:
-        app: promtail
+        app: alloy
     spec:
-      serviceAccountName: promtail
+      serviceAccountName: alloy
       containers:
-        - name: promtail
-          image: grafana/promtail:2.9.2
+        - name: alloy
+          image: grafana/alloy:latest
           args:
-            - -config.file=/etc/promtail/promtail-config.yaml
+            - run
+            - /etc/alloy/config.alloy
           volumeMounts:
             - name: config
-              mountPath: /etc/promtail
+              mountPath: /etc/alloy
             - name: run
-              mountPath: /run/promtail
+              mountPath: /run/alloy
             - name: varlog
               mountPath: /var/log
             - name: varlibdockercontainers
@@ -32,10 +34,10 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: promtail-config
+            name: alloy-config
         - name: run
           hostPath:
-            path: /run/promtail
+            path: /run/alloy
         - name: varlog
           hostPath:
             path: /var/log

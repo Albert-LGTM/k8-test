@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-config
+  namespace: monitoring
+  labels:
+    app: alloy
+data:
+  config.alloy: |
+    loki.write "loki_push" {
+      endpoint {
+        url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+      }
+    }
+
+    # Discover Kubernetes pods
+    discovery.kubernetes "pods" {
+      role = "pod"
+    }
+
+    # Scrape pod logs and forward to Loki
+    loki.source.kubernetes "pod_logs" {
+      targets = discovery.kubernetes.pods.targets
+      forward_to = [loki.write.loki_push.receiver]
+
+      # Relabeling rules
+      relabel_rules {
+        labeldrop = ["__meta_kubernetes_pod_container_id"]
+        labelmap  = "__meta_kubernetes_pod_label_(.*)"
+      }
+
+      relabel_rules {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+
+      relabel_rules {
+        source_labels = ["__meta_kubernetes_pod_namespace"]
+        target_label  = "namespace"
+      }
+
+      relabel_rules {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+    }
