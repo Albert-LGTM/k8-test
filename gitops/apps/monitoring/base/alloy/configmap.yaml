@@ -9,7 +9,7 @@ data:
       role = "pod"
     }
     
-    loki.source.kubernetes.pod "pod_logs" {
+    loki.source.kubernetes "pod_logs" {
       // Use the output of the discovery component as the targets to scrape from.
       targets = discovery.kubernetes.pods.targets
     
