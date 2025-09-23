@@ -16,3 +16,25 @@ data:
             target_label: __address__
             regex: (.*):10250
             replacement: ${1}:10250
+            
+      # Job to scrape Kubernetes pods 
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          # Keep only endpoints with "prometheus.io/scrape: 'true'" annotation
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          # Extract port from service annotation "prometheus.io/port"
+          - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+            action: replace
+            target_label: __address__
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+          # Extract the pod's name and set it as the instance label
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: instance
+          # Set the job to the pod's app label
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            target_label: job
