@@ -14,4 +14,4 @@ resources:
   - promtail/daemonset.yaml
   - promtail/rbac.yaml
   - certificate.yaml
-  - ingressroute.yamlc
+  - ingressroute.yaml
