@@ -9,7 +9,8 @@ data:
       role = "endpoints"
     }
     
-    loki.source.kubernetes "pod_logs" {
+    loki.source.kubernetes.pod "pod_logs" {
+      // Use the output of the discovery component as the targets to scrape from.
       targets = discovery.kubernetes.pod.pods.targets
     
       relabel_rules {
@@ -17,16 +18,12 @@ data:
         labelmap  = "__meta_kubernetes_pod_label_(.*)"
       }
       
-      forward_to = [loki.write.loki_push.receiver]
+      forward_to = [loki.process.loki_pipeline.receiver]
     }
     
-    loki.write "loki_push" {
-      endpoint {
-        url = "http://loki:3100/loki/api/v1/push"
-      }
-    }
-    
+    // This component processes logs from multiple sources before sending them to Loki.
     loki.process "loki_pipeline" {
+      // All processed logs are forwarded to the Loki write component.
       forward_to = [loki.write.loki_push.receiver]
       
       stage {
@@ -37,17 +34,27 @@ data:
       }
     }
     
+    // This component writes logs to the Loki API.
+    loki.write "loki_push" {
+      endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+      }
+    }
+    
+    // This component scrapes Prometheus metrics from the discovered pods.
     prometheus.scrape "pod_metrics" {
       targets    = discovery.kubernetes.pod.pods.targets
       forward_to = [prometheus.remote_write.prom_push.receiver]
     }
     
+    // This component writes Prometheus metrics to the Prometheus remote write endpoint.
     prometheus.remote_write "prom_push" {
       endpoint {
         url = "http://prometheus:9090/api/v1/write"
       }
     }
     
+    // This component receives telemetry data via the OTLP protocol.
     otelcol.receiver.otlp "otel_receiver" {
       grpc = {
         endpoint = "0.0.0.0:4317",
@@ -57,6 +64,7 @@ data:
       }
       
       output {
+        // Logs received via OTLP are also routed through the loki_pipeline.
         logs = [loki.process.loki_pipeline.receiver]
       }
     }
