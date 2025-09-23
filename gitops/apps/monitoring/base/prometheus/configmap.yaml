@@ -17,31 +17,29 @@ data:
             regex: (.*):10250
             replacement: $1:10250
             
-      - job_name: 'kubernetes-pods'
+      - job_name: 'kubernetes-services'
         kubernetes_sd_configs:
-          - role: pod
+          - role: endpointslice
         relabel_configs:
-          # Keep pods with the prometheus.io/scrape annotation
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          # Keep only services with a `prometheus.io/scrape` annotation set to "true".
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
             action: keep
             regex: true
-          # Extract port from pod annotation and replace the target address
-          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-            action: replace
-            regex: ([^:]+)(?::\d+)?;(\d+)
-            replacement: $1:$2
-            target_label: __address__
-          # Set job name from pod app label, or a default
-          - source_labels: [__meta_kubernetes_pod_label_app]
+          # Use the service name as the job name.
+          - source_labels: [__meta_kubernetes_service_name]
             action: replace
             target_label: job
-            regex: (.+)
-          # Set the instance label to the pod's name
-          - source_labels: [__meta_kubernetes_pod_name]
+          # Use the service port name for relabeling.
+          - source_labels: [__meta_kubernetes_endpointslice_port_name]
             action: replace
-            target_label: instance
-          # Use the annotated metrics path if it exists
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            target_label: endpoint
+          # Use the annotated metrics path if it exists.
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
             action: replace
             target_label: __metrics_path__
             regex: (.+)
+          # Use the annotated scheme if it exists.
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+            action: replace
+            target_label: __scheme__
+            regex: (https?)
