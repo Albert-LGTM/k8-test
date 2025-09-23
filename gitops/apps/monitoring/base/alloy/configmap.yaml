@@ -5,12 +5,12 @@ metadata:
   namespace: monitoring
 data:
   config.alloy: |
-    discovery.kubernetes.pods "pods" {
+    discovery.kubernetes.pod "pods" {
       role = "endpoints"
     }
     
     loki.source.kubernetes "pod_logs" {
-      targets = discovery.kubernetes.pods.pods.targets
+      targets = discovery.kubernetes.pod.pods.targets
     
       relabel_rules {
         labeldrop = ["__meta_kubernetes_pod_container_id"]
@@ -38,7 +38,7 @@ data:
     }
     
     prometheus.scrape "pod_metrics" {
-      targets    = discovery.kubernetes.pods.pods.targets
+      targets    = discovery.kubernetes.pod.pods.targets
       forward_to = [prometheus.remote_write.prom_push.receiver]
     }
     
