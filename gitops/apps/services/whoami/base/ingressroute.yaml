@@ -13,4 +13,4 @@ spec:
         - name: whoami
           port: 80
   tls:
-    secretName: whoami-tls # Traefik uses the secret managed by Cert-Manager
+    secretName: whoami-tls

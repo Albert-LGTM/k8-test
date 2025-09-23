@@ -14,3 +14,4 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
+  isCA: false
