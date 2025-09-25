@@ -42,7 +42,3 @@ data:
             action: replace
             target_label: __metrics_path__
             regex: (.+)
-
-    remote_write:
-      - url: "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
-
