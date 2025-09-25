@@ -6,6 +6,3 @@ namespace: ticket-system
 resources:
   - ../../base
 
-resources:
-  - certificate.yaml
-  - ingressroute.yaml

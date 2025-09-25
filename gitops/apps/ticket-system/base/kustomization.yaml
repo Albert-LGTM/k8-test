@@ -1,15 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-helmCharts:
-  - name: zammad
-    chart: zammad/zammad
-    version: 7.0.0
-    releaseName: zammad-app
-    namespace: ticket-system
-    repo: https://zammad.github.io/zammad-helm/
-    valuesFile: ../../overlays/production/patch-values.yaml
-
 resources:
   - ingressroute.yaml
   - certificate.yaml

@@ -5,12 +5,12 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - clusterDecisionResource:
-      configMapRef: ocm-placement-generator
-      labelSelector:
-        matchLabels:
-          cluster.open-cluster-management.io/placement: prod
-      requeueAfterSeconds: 30
+    - clusterDecisionResource:
+        configMapRef: ocm-placement-generator
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: prod
+        requeueAfterSeconds: 30
   template:
     metadata:
       name: '{{name}}-ticket-system'
@@ -23,9 +23,49 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
-        targetRevision: HEAD
-        path: gitops/apps/ticket-system/overlays/production
+        repoURL: https://zammad.github.io/zammad-helm/
+        chart: zammad
+        targetRevision: 7.0.0
+        helm:
+          values: |
+            replicaCount: 1
+            image:
+              repository: zammad/zammad
+              tag: latest
+              pullPolicy: IfNotPresent
+            postgresql:
+              enabled: true
+              postgresqlDatabase: zammad
+              postgresqlUsername: zammad
+              postgresqlPassword: zammadpassword
+              persistence:
+                enabled: true
+                size: 5Gi
+            elasticsearch:
+              enabled: false
+            resources:
+              limits:
+                cpu: 500m
+                memory: 1Gi
+              requests:
+                cpu: 250m
+                memory: 512Mi
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/ingress.class: traefik
+              hosts:
+                - host: ticket-system.cyberpartners.dk
+                  path: /
+              tls:
+                - secretName: ticket-system-tls
+                  hosts:
+                    - ticket-system.cyberpartners.dk
+            zammadConfig:
+              initJob:
+                randomName: false
+                annotations:
+                  argocd.argoproj.io/hook: Sync
       destination:
         server: https://kubernetes.default.svc
         namespace: ticket-system
