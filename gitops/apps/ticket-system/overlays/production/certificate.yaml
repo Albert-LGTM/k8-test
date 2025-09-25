@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ticket-system-tls
+  namespace: ticket-system
+spec:
+  secretName: ticket-system-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  dnsNames:
+    - ticket-system.cyberpartners.dk
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  isCA: false

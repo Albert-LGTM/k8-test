@@ -1,0 +1,45 @@
+replicaCount: 1
+
+image:
+  repository: zammad/zammad
+  tag: latest
+  pullPolicy: IfNotPresent
+
+postgresql:
+  enabled: true
+  postgresqlDatabase: zammad
+  postgresqlUsername: zammad
+  postgresqlPassword: zammadpassword
+  persistence:
+    enabled: true
+    size: 5Gi
+
+elasticsearch:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  hosts:
+    - host: ticket-system.cyberpartners.dk
+      paths:
+        - /
+  tls:
+    - secretName: ticket-system-tls
+      hosts:
+        - ticket-system.cyberpartners.dk
+
+zammadConfig:
+  initJob:
+    randomName: false
+    annotations:
+      argocd.argoproj.io/hook: Sync

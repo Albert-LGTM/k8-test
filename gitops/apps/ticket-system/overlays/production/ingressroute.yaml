@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ticket-system
+  namespace: ticket-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ticket-system.cyberpartners.dk`)
+      kind: Rule
+      services:
+        - name: zammad-grafana
+          port: 80
+  tls:
+    secretName: ticket-system-tls
