@@ -28,6 +28,7 @@ spec:
         targetRevision: 15.2.2
         helm:
           values: |
+            # Zammad application-specific configuration
             zammadConfig:
               initJob:
                 randomName: false
@@ -36,15 +37,18 @@ spec:
               nginx:
                 ingress:
                   enabled: true
-            ingress:
-              enabled: true
-              className: "traefik"
+
+            # Kubernetes Service configuration for Zammad Nginx
             service:
               type: ClusterIP
               port: 8080
               targetPort: 8080
+
+            ingress:
+              enabled: true
+              className: "traefik"
               annotations:
-                kubernetes.io/ingress.class: traefik
+                # Annotation for cert-manager is correctly placed on the Ingress object
                 cert-manager.io/cluster-issuer: letsencrypt-production
               hosts:
                 - host: ticket-system.cyberpartners.dk
@@ -55,6 +59,7 @@ spec:
                 - hosts:
                     - ticket-system.cyberpartners.dk
                   secretName: ticket-system-tls
+                  
       destination:
         server: https://kubernetes.default.svc
         namespace: ticket-system
