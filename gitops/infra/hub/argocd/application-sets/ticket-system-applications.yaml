@@ -9,7 +9,7 @@ spec:
       configMapRef: ocm-placement-generator
       labelSelector:
         matchLabels:
-          cluster.open-cluster-management.io/placement: production
+          cluster.open-cluster-management.io/placement: prod
       requeueAfterSeconds: 30
   template:
     metadata:

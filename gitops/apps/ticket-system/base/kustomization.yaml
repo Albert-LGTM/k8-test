@@ -9,3 +9,7 @@ helmCharts:
     namespace: ticket-system
     repo: https://zammad.github.io/zammad-helm/
     valuesFile: ../../overlays/production/patch-values.yaml
+
+resources:
+  - ingressroute.yaml
+  - certificate.yaml

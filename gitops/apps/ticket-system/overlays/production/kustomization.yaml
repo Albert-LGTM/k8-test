@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: ticket-system
 
-bases:
+resources:
   - ../../base
 
 resources:
