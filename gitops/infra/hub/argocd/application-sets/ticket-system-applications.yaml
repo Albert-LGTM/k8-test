@@ -33,6 +33,9 @@ spec:
                 randomName: false
                 annotations:
                   argocd.argoproj.io/hook: Sync
+              nginx:
+                ingress:
+                  enabled: true
             ingress:
               enabled: true
               className: "traefik"
