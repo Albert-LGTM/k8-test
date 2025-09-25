@@ -40,6 +40,8 @@ spec:
               websecure:
                 http:
                   tls: {}
+              additionalArguments:
+                - --providers.kubernetesingress.namespaces=ticket-system
       destination:
         server: https://kubernetes.default.svc
         namespace: traefik
