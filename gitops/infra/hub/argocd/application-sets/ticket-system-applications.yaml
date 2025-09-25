@@ -13,7 +13,7 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-ticket-system'
+      name: '{{name}}-ts'
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
       annotations:
@@ -25,6 +25,14 @@ spec:
       source:
         repoURL: https://zammad.github.io/zammad-helm/
         chart: zammad
+        targetRevision: 15.2.2
+        helm:
+          values: |
+            zammadConfig:
+              initJob:
+                randomName: false
+                annotations:
+                  argocd.argoproj.io/hook: Sync 
       destination:
         server: https://kubernetes.default.svc
         namespace: ticket-system
