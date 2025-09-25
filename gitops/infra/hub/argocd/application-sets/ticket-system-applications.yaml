@@ -25,7 +25,6 @@ spec:
       source:
         repoURL: https://zammad.github.io/zammad-helm/
         chart: zammad
-        targetRevision: 7.0.0
       destination:
         server: https://kubernetes.default.svc
         namespace: ticket-system
