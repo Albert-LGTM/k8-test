@@ -32,7 +32,20 @@ spec:
               initJob:
                 randomName: false
                 annotations:
-                  argocd.argoproj.io/hook: Sync 
+                  argocd.argoproj.io/hook: Sync
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/ingress.class: traefik
+                cert-manager.io/cluster-issuer: letsencrypt-production
+              hosts:
+                - host: ticket-system.cyberpartners.dk
+                  paths:
+                    - /
+              tls:
+                - hosts:
+                    - ticket-system.cyberpartners.dk
+                  secretName: ticket-system-tls
       destination:
         server: https://kubernetes.default.svc
         namespace: ticket-system
