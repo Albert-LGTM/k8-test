@@ -46,9 +46,8 @@ spec:
 
             ingress:
               enabled: true
-              className: "traefik"
+              className: "{{name}}-traefik"
               annotations:
-                # Annotation for cert-manager is correctly placed on the Ingress object
                 cert-manager.io/cluster-issuer: letsencrypt-production
               hosts:
                 - host: ticket-system.cyberpartners.dk
