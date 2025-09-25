@@ -10,6 +10,7 @@ data:
 
     scrape_configs:
       - job_name: 'kubernetes-nodes'
+        honor_timestamps: false
         kubernetes_sd_configs:
           - role: node
         relabel_configs:
@@ -44,4 +45,4 @@ data:
 
     remote_write:
       - url: "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
-        honor_timestamps: false
+

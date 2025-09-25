@@ -44,3 +44,7 @@
   environment:
     KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
   register: addon_result
+
+- name: Register clusters with ArgoCD
+  shell: argocd cluster add {{ item }} --name {{ item }} --kubeconfig {{ hostvars[item].kubeconfig }}
+  loop: "{{ groups['spoke_clusters'] }}"

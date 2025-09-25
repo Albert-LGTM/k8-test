@@ -1,4 +1,3 @@
----
 - name: Initialize the hub cluster with Open Cluster Management (OCM)
   ansible.builtin.command: clusteradm init --wait
   delegate_to: "{{ groups['hub_cluster'][0] }}"
@@ -20,3 +19,11 @@
   ansible.builtin.set_fact:
     ocm_token: "{{ (join_token_output.stdout | regex_search('token=(\\S+)', '\\1')) | first }}"
     cacheable: true
+
+- name: Get hub API server public endpoint
+  ansible.builtin.command: kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
+  delegate_to: "{{ groups['hub_cluster'][0] }}"
+  register: hub_apiserver
+  changed_when: false
+  environment:
+    KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"

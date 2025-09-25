@@ -3,7 +3,7 @@
   ansible.builtin.shell: >
     clusteradm join
     --hub-token '{{ ocm_token }}'
-    --hub-apiserver https://{{ hostvars[groups['hub_cluster'][0]].ansible_host }}
+    --hub-apiserver {{ hub_apiserver.stdout }}
     --cluster-name '{{ item }}'
   environment:
     KUBECONFIG: "{{ hostvars[item].kubeconfig }}"
@@ -16,4 +16,6 @@
     clusteradm accept --clusters {{ item }}
   delegate_to: "{{ groups['hub_cluster'][0] }}"
   loop: "{{ groups['spoke_clusters'] }}"
+  environment:
+    KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
 
