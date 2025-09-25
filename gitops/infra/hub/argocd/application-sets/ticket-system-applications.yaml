@@ -28,15 +28,22 @@ spec:
         targetRevision: 15.2.2
         helm:
           values: |
+            elasticsearch:
+              enabled: false
+              
             # Zammad application-specific configuration
             zammadConfig:
               initJob:
                 randomName: false
                 annotations:
                   argocd.argoproj.io/hook: Sync
-              nginx:
-                ingress:
-                  enabled: true
+
+            elasticsearch:
+              enabled: false
+
+            nginx:
+              ingress:
+                enabled: true
 
             # Kubernetes Service configuration for Zammad Nginx
             service:
