@@ -31,7 +31,7 @@ spec:
             replicaCount: 1
             image:
               repository: zammad/zammad
-              tag: latest
+              tag: 5.2.3-32
               pullPolicy: IfNotPresent
             postgresql:
               enabled: true
@@ -56,13 +56,15 @@ spec:
                 kubernetes.io/ingress.class: traefik
               hosts:
                 - host: ticket-system.cyberpartners.dk
-                  path: /
+                  paths:
+                    - /
               tls:
                 - secretName: ticket-system-tls
                   hosts:
                     - ticket-system.cyberpartners.dk
             zammadConfig:
               initJob:
+                enabled: true
                 randomName: false
                 annotations:
                   argocd.argoproj.io/hook: Sync
