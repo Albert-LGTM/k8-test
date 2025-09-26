@@ -36,8 +36,8 @@ spec:
                 randomName: false
                 annotations:
                   argocd.argoproj.io/hook: Sync
-            elasticsearch:
-              enabled: false
+              elasticsearch:
+                enabled: false
             nginx:
               ingress:
                 enabled: true
