@@ -36,6 +36,8 @@ spec:
                 randomName: false
                 annotations:
                   argocd.argoproj.io/hook: Sync
+            elasticsearch:
+              enabled: false
             nginx:
               ingress:
                 enabled: true
@@ -43,7 +45,7 @@ spec:
             service:
               type: ClusterIP
               port: 8080
-              targetPort: 808
+              targetPort: 8080
             ingress:
               enabled: true
               className: "{{name}}-traefik"
