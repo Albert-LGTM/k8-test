@@ -30,27 +30,20 @@ spec:
           values: |
             elasticsearch:
               enabled: false
-              
             # Zammad application-specific configuration
             zammadConfig:
               initJob:
                 randomName: false
                 annotations:
                   argocd.argoproj.io/hook: Sync
-
-            elasticsearch:
-              enabled: false
-
             nginx:
               ingress:
                 enabled: true
-
             # Kubernetes Service configuration for Zammad Nginx
             service:
               type: ClusterIP
               port: 8080
-              targetPort: 8080
-
+              targetPort: 808
             ingress:
               enabled: true
               className: "{{name}}-traefik"
@@ -65,7 +58,6 @@ spec:
                 - hosts:
                     - ticket-system.cyberpartners.dk
                   secretName: ticket-system-tls
-                  
       destination:
         server: https://kubernetes.default.svc
         namespace: ticket-system
