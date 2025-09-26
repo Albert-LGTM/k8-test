@@ -41,19 +41,6 @@ spec:
                 enabled: false
               postgresql:
                 enabled: false
-              extraEnv:
-                - name: POSTGRESQL_HOST
-                  value: "db-postgresql-nyc1-10345-do-user-11835246-0.l.db.ondigitalocean.com"
-                - name: POSTGRESQL_PORT
-                  value: "25060"
-                - name: POSTGRESQL_USER
-                  value: "doadmin"
-                - name: POSTGRESQL_DATABASE
-                  value: "defaultdb"
-                - name: POSTGRESQL_ADAPTER_OPTIONS
-                  value: "sslmode=require"
-                - name: POSTGRESQL_PASSWORD
-                  value: "123"
             nginx:
               ingress:
                 enabled: true
