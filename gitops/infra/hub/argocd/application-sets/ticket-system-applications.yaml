@@ -13,7 +13,7 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-ts'
+      name: '{{name}}-ticket-system'
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
       annotations:
@@ -28,9 +28,10 @@ spec:
         targetRevision: 15.2.2
         helm:
           values: |
+            postgresql:
+              enabled: false
             elasticsearch:
               enabled: false
-            # Zammad application-specific configuration
             zammadConfig:
               initJob:
                 randomName: false
@@ -38,10 +39,24 @@ spec:
                   argocd.argoproj.io/hook: Sync
               elasticsearch:
                 enabled: false
+              postgresql:
+                enabled: false
+              extraEnv:
+                - name: POSTGRESQL_HOST
+                  value: "db-postgresql-nyc1-10345-do-user-11835246-0.l.db.ondigitalocean.com"
+                - name: POSTGRESQL_PORT
+                  value: "25060"
+                - name: POSTGRESQL_USER
+                  value: "doadmin"
+                - name: POSTGRESQL_DATABASE
+                  value: "defaultdb"
+                - name: POSTGRESQL_ADAPTER_OPTIONS
+                  value: "sslmode=require"
+                - name: POSTGRESQL_PASSWORD
+                  value: "123"
             nginx:
               ingress:
                 enabled: true
-            # Kubernetes Service configuration for Zammad Nginx
             service:
               type: ClusterIP
               port: 8080
