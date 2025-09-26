@@ -30,28 +30,23 @@ spec:
           values: |
             global:
               image: hashicorp/vault
-            
             server:
               standalone:
                 enabled: false
               dev:
                 enabled: false
-            
               ha:
                 enabled: true
                 replicas: 3
                 raft:
                   enabled: true
                   setNodeId: true
-            
               dataStorage:
                 enabled: true
                 storageClass: "do-block-storage"
                 size: 10Gi 
-            
               config: |
                 ui = true
-                
                 listener "tcp" {
                   tls_disable = 0
                   address = "[::]:8200"
@@ -61,7 +56,6 @@ spec:
                 storage "raft" {
                   path = "/vault/data"
                 }
-            
               resources:
                 requests:
                   memory: 2Gi
@@ -69,10 +63,8 @@ spec:
                 limits:
                   memory: 4Gi
                   cpu: 2000m
-                  
             injector:
               enabled: true
-            
             ui:
               enabled: true
               serviceType: ClusterIP
@@ -90,7 +82,6 @@ spec:
                   - hosts:
                       - vault.cyberpartners.dk
                     secretName: "vault-tls"
-
       destination:
         server: https://kubernetes.default.svc
         namespace: vault
