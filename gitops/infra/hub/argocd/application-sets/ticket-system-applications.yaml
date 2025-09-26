@@ -28,8 +28,6 @@ spec:
         targetRevision: 15.2.2
         helm:
           values: |
-            postgresql:
-              enabled: false
             elasticsearch:
               enabled: false
             zammadConfig:
@@ -38,8 +36,6 @@ spec:
                 annotations:
                   argocd.argoproj.io/hook: Sync
               elasticsearch:
-                enabled: false
-              postgresql:
                 enabled: false
             nginx:
               ingress:
