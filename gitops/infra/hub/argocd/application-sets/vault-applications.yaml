@@ -22,13 +22,16 @@ spec:
         apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
     spec:
       project: default
-      source:
-        repoURL: https://github.com/Albert-LGTM/k8-test.git
-        targetRevision: main
-        path: gitops/apps/vault
+      sources:
+      - repoURL: 'https://chartmuseum.cyberpartners.dk'
+        chart: vault
+        targetRevision: 0.31.0
         helm:
           valueFiles:
-            - values.yaml
+          - $values/gitops/apps/vault/values.yaml
+      - repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
+        targetRevision: main
+        ref: values
       destination:
         server: https://kubernetes.default.svc
         namespace: vault
