@@ -417,12 +417,12 @@ server:
     hosts:
       - host: vault.cyberpartners.dk
         paths:
-          - path: /
-            pathType: Prefix
+          - /
+    extraPaths: []
     tls:
-      - hosts:
-          - vault.cyberpartners.dk
-        secretName: vault-tls
+     - secretName: vault-tls
+       hosts:
+         - vault.cyberpartners.dk
 
   # hostAliases is a list of aliases to be added to /etc/hosts. Specified as a YAML list.
   hostAliases: []
