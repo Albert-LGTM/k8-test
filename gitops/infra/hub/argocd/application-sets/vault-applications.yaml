@@ -25,7 +25,7 @@ spec:
       source:
         repoURL: https://github.com/Albert-LGTM/k8-test.git
         targetRevision: main
-        path: gitops/apps/vault/vault
+        path: gitops/apps/vault/chart.yaml
         helm:
           valueFiles:
             - gitops/apps/vault/values.yaml
