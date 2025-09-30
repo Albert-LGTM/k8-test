@@ -9,7 +9,7 @@ global:
   enabled: true
 
   # The namespace to deploy to. Defaults to the `helm` installation namespace.
-  namespace: ""
+  namespace: "vault"
 
   # Image pull secret to use for registry authentication.
   # Alternatively, the value may be specified as an array of strings.
@@ -405,12 +405,13 @@ server:
   # from Kubernetes to access Vault pods.
   # If deployment is on OpenShift, the following block is ignored.
   # In order to expose the service, use the route section below
+
   ingress:
     enabled: true
-    labels: {}
-    annotations:
+    labels: {} # traffic: external
+    annotations: 
       cert-manager.io/cluster-issuer: letsencrypt-production
-    ingressClassName: "{{name}}-traefik"
+    ingressClassName: "core-traefik"
     pathType: Prefix
     activeService: true
     hosts:
@@ -421,7 +422,7 @@ server:
     tls:
       - hosts:
           - vault.cyberpartners.dk
-        secretName: "vault-tls"
+        secretName: vault-tls
 
   # hostAliases is a list of aliases to be added to /etc/hosts. Specified as a YAML list.
   hostAliases: []
