@@ -24,6 +24,7 @@ spec:
       project: default
       sources:
       - repoURL: 'https://chartmuseum.cyberpartners.dk'
+        insecure: true
         chart: vault
         targetRevision: 0.31.0
         helm:
