@@ -8,3 +8,9 @@ create ca stuff:  (do this for each)
 
 Add repo? 
 argocd add repo
+
+
+kubectl --kubeconfig=ansible/kubeconfig/hub-kubeconfig.yaml label managedcluster core open-cluster-management.io/cluster-name=core
+kubectl --kubeconfig=ansible/kubeconfig/hub-kubeconfig.yaml label managedcluster dev open-cluster-management.io/cluster-name=dev
+kubectl --kubeconfig=ansible/kubeconfig/hub-kubeconfig.yaml label managedcluster internal open-cluster-management.io/cluster-name=internal
+kubectl --kubeconfig=ansible/kubeconfig/hub-kubeconfig.yaml label managedcluster prod open-cluster-management.io/cluster-name=prod

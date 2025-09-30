@@ -27,61 +27,8 @@ spec:
         chart: vault
         targetRevision: 0.31.0
         helm:
-          values: |
-            global:
-              image: hashicorp/vault
-            server:
-              standalone:
-                enabled: false
-              dev:
-                enabled: false
-              ha:
-                enabled: true
-                replicas: 3
-                raft:
-                  enabled: true
-                  setNodeId: true
-              dataStorage:
-                enabled: true
-                storageClass: "do-block-storage"
-                size: 10Gi 
-              config: |
-                ui = true
-                listener "tcp" {
-                  tls_disable = 0
-                  address = "[::]:8200"
-                  cluster_address = "[::]:8201"
-                }
-                
-                storage "raft" {
-                  path = "/vault/data"
-                }
-              resources:
-                requests:
-                  memory: 2Gi
-                  cpu: 1000m
-                limits:
-                  memory: 4Gi
-                  cpu: 2000m
-            injector:
-              enabled: true
-            ui:
-              enabled: true
-              serviceType: ClusterIP
-              ingress:
-                enabled: true
-                className: "{{name}}-traefik"
-                annotations:
-                  cert-manager.io/cluster-issuer: letsencrypt-production
-                hosts:
-                  - host: vault.cyberpartners.dk 
-                    paths:
-                      - path: /
-                        pathType: Prefix
-                tls:
-                  - hosts:
-                      - vault.cyberpartners.dk
-                    secretName: "vault-tls"
+          valueFiles:
+            - gitops/apps/vault/values.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: vault
@@ -91,5 +38,3 @@ spec:
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
-          - 'helm.sh/hook-delete-policy=before-hook-creation'
-          - 'helm.sh/resource-policy=keep'
