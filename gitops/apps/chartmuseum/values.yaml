@@ -306,7 +306,7 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-production
   hosts:
     - name: chartmuseum.cyberpartners.dk
-      path: /api/charts
+      path: /
       tls: true
       tlsSecret: chartmuseum-tls
 
