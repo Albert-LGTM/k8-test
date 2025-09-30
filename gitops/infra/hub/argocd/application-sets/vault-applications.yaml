@@ -23,8 +23,7 @@ spec:
     spec:
       project: default
       sources:
-      - repoURL: 'https://chartmuseum.cyberpartners.dk'
-        insecure: true
+      - repoURL: https://helm.releases.hashicorp.com
         chart: vault
         targetRevision: 0.31.0
         helm:
