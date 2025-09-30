@@ -24,7 +24,7 @@ resource "digitalocean_kubernetes_cluster" "clusters" {
 
   name    = each.key
   region  = element(var.regions, index(var.cluster_names, each.key) % length(var.regions))
-  version = "1.33.1-do.3"
+  version = "1.33.1-do.4"
 
   node_pool {
     name       = "${each.key}-pool"

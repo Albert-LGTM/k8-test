@@ -31,6 +31,7 @@
 
 - name: Install OCM Argo CD add-on
   command: clusteradm install hub-addon --names argocd
+  loop: "{{ managed_clusters }}"
   environment:
     KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
   register: result
@@ -39,12 +40,19 @@
 
 - name: Enable Argo CD add-on on managed clusters
   command: clusteradm addon enable --names argocd --clusters {{ item | join(',') }}
-  loop:
-    - "{{ managed_clusters }}"
+  loop: "{{ managed_clusters }}"
   environment:
     KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
   register: addon_result
 
+## Need to login first
+
 - name: Register clusters with ArgoCD
-  shell: argocd cluster add {{ item }} --name {{ item }} --kubeconfig {{ hostvars[item].kubeconfig }}
+  shell: |
+    if ! argocd cluster list | grep -q "{{ item }}"; then
+      argocd cluster add {{ item }} --name {{ item }} --kubeconfig {{ hostvars[item].kubeconfig }}
+    else
+      echo "Cluster {{ item }} already registered"
+    fi
   loop: "{{ groups['spoke_clusters'] }}"
+  delegate_to: localhost

@@ -3670,7 +3670,7 @@ clustermesh:
       port: 9962
       kvstoremesh:
         # -- Enables exporting KVStoreMesh metrics in OpenMetrics format.
-        enabled: true
+        enabled: false
         # -- Configure the port the KVStoreMesh metric server listens on.
         port: 9964
       etcd:
