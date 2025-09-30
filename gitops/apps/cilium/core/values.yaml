@@ -2994,7 +2994,7 @@ operator:
   # /metrics
   prometheus:
     metricsService: false
-    enabled: true
+    enabled: false
     port: 9963
     serviceMonitor:
       # -- Enable service monitors.
