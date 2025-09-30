@@ -1,2 +1,3 @@
 terraform/terraform.tfvars
 ansible/kubeconfig/*.yaml
+secrets/*
