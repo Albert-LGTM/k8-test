@@ -28,7 +28,7 @@ spec:
         path: gitops/apps/vault
         helm:
           valueFiles:
-            - gitops/apps/vault/values.yaml
+            - values.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: vault
