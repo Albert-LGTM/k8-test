@@ -22,13 +22,19 @@ spec:
         apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
     spec:
       project: default
-      source:
-        repoURL: 'https://helm.cilium.io/'
+      sources:
+      - repoURL: 'https://helm.cilium.io/'
         chart: cilium
         targetRevision: 1.18.2
+        helm:
+          valueFiles:
+          - $values/gitops/apps/cilium/{{name}}/values.yaml
+      - repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
+        targetRevision: main
+        ref: values
       destination:
         server: https://kubernetes.default.svc
-        namespace: kube-system
+        namespace: cilium
       syncPolicy:
         automated:
           prune: true

@@ -28,7 +28,7 @@ spec:
         targetRevision: 0.31.0
         helm:
           valueFiles:
-          - $values/gitops/apps/vault/values.yaml
+          - $values/gitops/apps/vault/core/values.yaml
       - repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: main
         ref: values
