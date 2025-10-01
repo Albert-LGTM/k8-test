@@ -39,11 +39,15 @@
   changed_when: "'already exists' not in result.stdout"
 
 - name: Enable Argo CD add-on on managed clusters
-  command: clusteradm addon enable --names argocd --clusters {{ item | join(',') }}
+  ansible.builtin.command: >
+    clusteradm addon enable
+    --names argocd
+    --clusters {{ item }}
   loop: "{{ managed_clusters }}"
   environment:
     KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
   register: addon_result
+
 
 ## Need to login first
 

@@ -11,11 +11,16 @@
   loop: "{{ groups['spoke_clusters'] }}"
   register: join_output
 
-- name: Accept the cluster join request on the hub
-  ansible.builtin.command: >
+- name: Accept cluster join request with retry
+  ansible.builtin.shell: >
     clusteradm accept --clusters {{ item }}
-  delegate_to: "{{ groups['hub_cluster'][0] }}"
-  loop: "{{ groups['spoke_clusters'] }}"
   environment:
     KUBECONFIG: "{{ hostvars[groups['hub_cluster'][0]].kubeconfig }}"
+  delegate_to: "{{ groups['hub_cluster'][0] }}"
+  register: accept_output
+  until: accept_output.rc == 0
+  retries: 5
+  delay: 10
+  loop: "{{ groups['spoke_clusters'] }}"
+
 
