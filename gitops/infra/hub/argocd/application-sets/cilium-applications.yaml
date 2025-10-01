@@ -13,7 +13,7 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-cilium'
+      name: "{{name}}-cilium"
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
       annotations:
@@ -34,7 +34,7 @@ spec:
         ref: values
       destination:
         server: https://kubernetes.default.svc
-        namespace: kube-sytem
+        namespace: kube-system
       syncPolicy:
         automated:
           prune: true
