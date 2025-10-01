@@ -951,6 +951,8 @@ ingressController:
     annotations: {}
     # -- Service type for the shared LB service
     type: LoadBalancer
+    selector:
+      k8s-app: cilium-envoy 
     # @schema
     # type: [null, integer]
     # @schema
