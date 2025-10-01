@@ -411,7 +411,7 @@ server:
     labels: {} # traffic: external
     annotations: 
       cert-manager.io/cluster-issuer: letsencrypt-production
-    ingressClassName: "core-traefik"
+    ingressClassName: "cilium-ingress"
     pathType: Prefix
     activeService: true
     hosts:
