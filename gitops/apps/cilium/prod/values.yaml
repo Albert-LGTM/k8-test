@@ -950,7 +950,7 @@ ingressController:
     # -- Annotations to be added for the shared LB service
     annotations: {}
     # -- Service type for the shared LB service
-    type: LoadBalancer
+    type: ClusterIP
     # @schema
     # type: [null, integer]
     # @schema
