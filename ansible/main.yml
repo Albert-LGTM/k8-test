@@ -5,13 +5,13 @@
   gather_facts: false
 
   tasks:
-    # - name: Run hub cluster setup role
-    #   ansible.builtin.include_role:
-    #     name: setup-hub
+    - name: Run hub cluster setup role
+      ansible.builtin.include_role:
+        name: setup-hub
 
-    # - name: Run spoke clusters setup role
-    #   ansible.builtin.include_role:
-    #     name: setup-spokes
+    - name: Run spoke clusters setup role
+      ansible.builtin.include_role:
+        name: setup-spokes
 
     - name: Run Argo CD setup role
       ansible.builtin.include_role:
