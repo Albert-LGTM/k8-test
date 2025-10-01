@@ -13,7 +13,7 @@ spec:
       requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-whoami'
+      name: "{{name}}-whoami"
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
       annotations:

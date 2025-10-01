@@ -13,7 +13,7 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: '{{name}}-ticket-system'
+      name: "{{name}}-ticket-system"
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
       annotations:
