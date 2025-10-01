@@ -905,10 +905,10 @@ envoyConfig:
 ingressController:
   # -- Enable cilium ingress controller
   # This will automatically set enable-envoy-config as well.
-  enabled: true
+  enabled: false
   # -- Set cilium ingress controller to be the default ingress controller
   # This will let cilium ingress controller route entries without ingress class set
-  default: true
+  default: false
   # -- Default ingress load balancer mode
   # Supported values: shared, dedicated
   # For granular control, use the following annotations on the ingress resource:
@@ -2994,7 +2994,7 @@ operator:
   # /metrics
   prometheus:
     metricsService: false
-    enabled: false
+    enabled: true
     port: 9963
     serviceMonitor:
       # -- Enable service monitors.
@@ -3670,7 +3670,7 @@ clustermesh:
       port: 9962
       kvstoremesh:
         # -- Enables exporting KVStoreMesh metrics in OpenMetrics format.
-        enabled: false
+        enabled: true
         # -- Configure the port the KVStoreMesh metric server listens on.
         port: 9964
       etcd:

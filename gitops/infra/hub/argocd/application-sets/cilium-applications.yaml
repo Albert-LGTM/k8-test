@@ -34,7 +34,7 @@ spec:
         ref: values
       destination:
         server: https://kubernetes.default.svc
-        namespace: cilium
+        namespace: kube-sytem
       syncPolicy:
         automated:
           prune: true
