@@ -1,0 +1,17 @@
+  ingress:
+    enabled: true
+    labels: {} # traffic: external
+    annotations: 
+      cert-manager.io/cluster-issuer: letsencrypt-production
+    ingressClassName: "{{name}}-traefik"
+    pathType: Prefix
+    activeService: true
+    hosts:
+      - host: wazuh.cyberpartners.dk
+        paths:
+          - /
+    extraPaths: []
+    tls:
+     - secretName: vault-tls
+       hosts:
+         - wazuh.cyberpartners.dk

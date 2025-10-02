@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: traefik-applications
+  name: wazuh-applications
   namespace: argocd
 spec:
   generators:
@@ -9,11 +9,11 @@ spec:
         configMapRef: ocm-placement-generator
         labelSelector:
           matchLabels:
-            cluster.open-cluster-management.io/placement: all-managed-clusters
+            cluster.open-cluster-management.io/placement: prod
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: "{{name}}-traefik"
+      name: "{{name}}-wazuh"
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
       annotations:
@@ -23,14 +23,13 @@ spec:
     spec:
       project: default
       sources:
-      - repoURL: https://helm.traefik.io/traefik
-        chart: traefik
-        targetRevision: '37.1.1'
+      - repoURL: https://morgoved.github.io/wazuh-helm
+        chart: wazuh
+        targetRevision: '4.12.0'
         helm:
           valueFiles:
-          - $values/gitops/apps/traefik/values.yaml
-#           - $values/gitops/apps/traefik/{{name}}/values.yaml
-
+          - $values/gitops/apps/wazuh/values.yaml
+          - $values/gitops/apps/wazuh/{{name}}/patch-values.yaml
       - repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: main
         ref: values
