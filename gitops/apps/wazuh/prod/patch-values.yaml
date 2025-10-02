@@ -27,6 +27,12 @@
 
   # Update dashboard configuration to use external OpenSearch
   dashboard:
+    env:
+      - name: OPENSEARCH_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: opensearch-creds
+            key: opensearch-password
     config: |
       server.host: 0.0.0.0
       server.port: 5601
@@ -42,6 +48,3 @@
       opensearch_security.multitenancy.enabled: false
       opensearch_security.readonly_mode.roles: ["kibana_read_only"]
       server.defaultRoute: "/app/wazuh"
-    envFrom:
-      - secretRef:
-          name: opensearch-creds
