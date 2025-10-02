@@ -22,7 +22,7 @@ spec:
         apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
     spec:
       project: default
-      source:
+      sources:
       - repoURL: https://helm.traefik.io/traefik
         chart: traefik
         targetRevision: '37.1.1'
