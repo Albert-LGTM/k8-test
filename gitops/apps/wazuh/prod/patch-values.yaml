@@ -15,3 +15,33 @@
      - secretName: vault-tls
        hosts:
          - wazuh.cyberpartners.dk
+
+  externalIndexer:
+    enabled: true  # Enable external indexer
+    host: "https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com"
+    port: 25060
+
+  # Disable the built-in indexer since we're using external
+  indexer:
+    enabled: false
+
+  # Update dashboard configuration to use external OpenSearch
+  dashboard:
+    config: |
+      server.host: 0.0.0.0
+      server.port: 5601
+      opensearch.hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
+      opensearch.ssl.verificationMode: none
+      opensearch.username: "doadmin"
+      opensearch.password: ${OPENSEARCH_PASSWORD}
+      opensearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
+      server.ssl.enabled: false
+      server.ssl.key: ""
+      server.ssl.certificate: ""
+      uiSettings.overrides.defaultRoute: /app/wazuh
+      opensearch_security.multitenancy.enabled: false
+      opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+      server.defaultRoute: "/app/wazuh"
+    envFrom:
+      - secretRef:
+          name: opensearch-creds
