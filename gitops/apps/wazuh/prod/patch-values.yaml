@@ -33,7 +33,7 @@
       opensearch.hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
       opensearch.ssl.verificationMode: none
       opensearch.username: "doadmin"
-      opensearch.password: ${OPENSEARCH_PASSWORD}
+      opensearch.password: "${OPENSEARCH_PASSWORD}"
       opensearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
       server.ssl.enabled: false
       server.ssl.key: ""
