@@ -23,6 +23,9 @@ spec:
     spec:
       project: default
       sources:
+      - repoURL: https://pkgs.tailscale.com/helmcharts
+        chart: tailscale-operator
+        targetRevision: 1.88.3
       - repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: main
         path: gitops/apps/tailscale
