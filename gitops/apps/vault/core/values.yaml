@@ -411,7 +411,6 @@ server:
     labels: {} # traffic: external
     annotations: 
       cert-manager.io/cluster-issuer: letsencrypt-production
-      tailscale.com/expose: "true" 
     ingressClassName: "core-traefik"
     pathType: Prefix
     activeService: true
@@ -1061,7 +1060,8 @@ ui:
   # Extra annotations to attach to the ui service
   # This can either be YAML or a YAML-formatted multi-line templated string map
   # of the annotations to apply to the ui service
-  annotations: {}
+  annotations:
+    tailscale.com/expose: "true" 
 
 # secrets-store-csi-driver-provider-vault
 csi:
