@@ -1,0 +1,20 @@
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: prod
+  namespace: argocd
+spec:
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: open-cluster-management.io/cluster-name
+              operator: NotIn
+              values:
+                - hub
+                - internal
+                - dev 
+                - core
+
+
+

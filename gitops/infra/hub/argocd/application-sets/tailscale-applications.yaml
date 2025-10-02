@@ -9,7 +9,7 @@ spec:
         configMapRef: ocm-placement-generator
         labelSelector:
           matchLabels:
-            cluster.open-cluster-management.io/placement: core
+            cluster.open-cluster-management.io/placement: all-managed-clusters
         requeueAfterSeconds: 30
   template:
     metadata:
@@ -17,9 +17,9 @@ spec:
       labels:
         apps.open-cluster-management.io/pull-to-ocm-managed-cluster: "true"
       annotations:
-        argocd.argoproj.io/skip-reconcile: "false"
+        argocd.argoproj.io/skip-reconcile: "true"
         apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
-        apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: kube-system
+        apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
     spec:
       project: default
       sources:
@@ -34,7 +34,7 @@ spec:
         ref: values
       destination:
         server: https://kubernetes.default.svc
-        namespace: kube-system
+        namespace: tailscale
       syncPolicy:
         automated:
           prune: true
