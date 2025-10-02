@@ -26,9 +26,12 @@ spec:
       - repoURL: https://pkgs.tailscale.com/helmcharts
         chart: tailscale-operator
         targetRevision: 1.88.3
+        helm:
+          valueFiles:
+          - $values/gitops/apps/tailscale/values.yaml
       - repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
         targetRevision: main
-        path: gitops/apps/tailscale
+        ref: values
       destination:
         server: https://kubernetes.default.svc
         namespace: kube-system
