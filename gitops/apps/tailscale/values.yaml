@@ -17,10 +17,7 @@ loginServer: ""
 # The volume needs to contain two files named `client_id` and `client_secret`.
 # If unset the volume will reference the Secret named operator-oauth.
 # This block will override the oauth block.
-oauthSecretVolume:
-  secretName: tailscale-auth
-  mountPath: /oauth
-  readOnly: true
+oauthSecretVolume: {}
   # csi:
   #   driver: secrets-store.csi.k8s.io
   #   readOnly: true
