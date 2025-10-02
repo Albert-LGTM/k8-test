@@ -19,7 +19,7 @@ loginServer: ""
 # This block will override the oauth block.
 oauthSecretVolume:
   secretName: tailscale-auth
-  mountPath: /secrets/oauth
+  mountPath: /oauth
   readOnly: true
   # csi:
   #   driver: secrets-store.csi.k8s.io
