@@ -29,7 +29,7 @@ spec:
         helm:
           values: |
             service:
-              type: LoadBalancer
+              type: ClusterIP
             entryPoints:
               web:
                 http:
