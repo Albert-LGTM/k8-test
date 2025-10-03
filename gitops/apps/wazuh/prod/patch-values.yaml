@@ -65,24 +65,24 @@ dashboard:
 master:
   # Assuming this structure is what the chart expects for master-specific settings
   networkPolicy:
-    enabled: true
-    extraEgresses:
-      - to:
-        - ipBlock:
-            cidr: "198.199.122.49/32"
-        ports:
-          - protocol: TCP
-            port: 25060
+    enabled: false
+    # extraEgresses:
+    #   - to:
+    #     - ipBlock:
+    #         cidr: "198.199.122.49/32"
+    #     ports:
+    #       - protocol: TCP
+    #         port: 25060
 
 # Worker Node Network Policy (If you have workers, they also need the rule)
 worker:
   networkPolicy:
-    enabled: true
-    extraEgresses:
-      - to:
-        - ipBlock:
-            cidr: "198.199.122.49/32"
-        ports:
-          - protocol: TCP
-            port: 25060
+    enabled: false
+    # extraEgresses:
+    #   - to:
+    #     - ipBlock:
+    #         cidr: "198.199.122.49/32"
+    #     ports:
+    #       - protocol: TCP
+    #         port: 25060
 
