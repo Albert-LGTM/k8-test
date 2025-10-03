@@ -859,9 +859,8 @@ wazuh:
     ## @param wazuh.master.extraConf Gets appended to the wazuh.master.conf.
     ##
     extraConf: |
-      <client>
-        <ca_path>/usr/local/certs/ca.crt</ca_path>
-      </client>
+      server.ssl.enabled: false
+      server.ssl.cert: /usr/local/certs/ca.crt
     ## Extra configuration for the wazuh master
     ## @param wazuh.master.extraSpec This section is less prioritized than the others
     ## @param wazuh.master.extraSpec.statefulSet Extra configuration for the wazuh master statefulset
