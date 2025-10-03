@@ -841,7 +841,13 @@ wazuh:
       {{ include "wazuh.master.conf" . }}
     ## @param wazuh.master.extraConf Gets appended to the wazuh.master.conf.
     ##
-    extraConf: ""
+    extraConf: |
+      <remote>
+        <connection>
+          secure="yes"
+          ca_verification="no"
+        </connection>
+      </remote>
     ## Extra configuration for the wazuh master
     ## @param wazuh.master.extraSpec This section is less prioritized than the others
     ## @param wazuh.master.extraSpec.statefulSet Extra configuration for the wazuh master statefulset
@@ -983,7 +989,13 @@ wazuh:
       {{ include "wazuh.worker.conf" . }}
     ## @param wazuh.worker.extraConf Gets appended to the wazuh.worker.conf.
     ##
-    extraConf: ""
+    extraConf: |
+      <remote>
+        <connection>
+          secure="yes"
+          ca_verification="no"
+        </connection>
+      </remote>
 
     ## Extra configuration for the wazuh worker
     ## @param wazuh.worker.extraSpec This section is less prioritized than the others
