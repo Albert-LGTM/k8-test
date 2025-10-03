@@ -45,19 +45,16 @@ dashboard:
     overrides:
       defaultRoute: /app/wazuh
 
-# Wazuh Core Configuration (REQUIRED PARENT KEY)
-wazuh:
-  # Manager Master Node Configuration (MOVED HERE)
-  master:
-    networkPolicy:
-      enabled: true
-      extraEgresses:
-        - to:
-          - ipBlock:
-              cidr: "198.199.122.49/32"
-          ports:
-            - protocol: TCP
-              port: 25060
+master:
+  networkPolicy:
+    enabled: true
+    extraEgresses:
+      - to:
+        - ipBlock:
+            cidr: "198.199.122.49/32"
+        ports:
+          - protocol: TCP
+            port: 25060
 
 # Ingress for Dashboard (Kept at top level)
 ingress:
