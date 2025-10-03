@@ -859,13 +859,9 @@ wazuh:
     ## @param wazuh.master.extraConf Gets appended to the wazuh.master.conf.
     ##
     extraConf: |
-      output.elasticsearch:
-        hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
-        protocol: https
-        ssl.enabled: false
-        # This is the line that now contains your working certificate bundle:
-        ssl.certificate_authorities: ["/usr/local/certs/ca.crt"]
-
+      <client>
+        <ca_path>/usr/local/certs/ca.crt</ca_path>
+      </client>
     ## Extra configuration for the wazuh master
     ## @param wazuh.master.extraSpec This section is less prioritized than the others
     ## @param wazuh.master.extraSpec.statefulSet Extra configuration for the wazuh master statefulset
