@@ -22,7 +22,7 @@ spec:
     spec:
       project: default
       sources:
-      - repoURL: https://coredns.github.io/coredns
+      - repoURL: https://coredns.github.io/helm
         chart: coredns
         targetRevision: '1.44.3'
         helm:
