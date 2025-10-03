@@ -860,7 +860,10 @@ wazuh:
     ##
     extraConf: |
       output.elasticsearch:
-        # Use the mounted path in the Filebeat/Wazuh output configuration
+        hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
+        protocol: https
+        ssl.enabled: false
+        # This is the line that now contains your working certificate bundle:
         ssl.certificate_authorities: ["/usr/local/certs/ca.crt"]
 
     ## Extra configuration for the wazuh master
