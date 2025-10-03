@@ -859,8 +859,10 @@ wazuh:
     ## @param wazuh.master.extraConf Gets appended to the wazuh.master.conf.
     ##
     extraConf: |
-      server.ssl.enabled: false
-      server.ssl.cert: /usr/local/certs/ca.crt
+      # This configures Filebeat to ignore SSL errors for the Elasticsearch output
+      output.elasticsearch:
+        hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
+        ssl.verification_mode: none
     ## Extra configuration for the wazuh master
     ## @param wazuh.master.extraSpec This section is less prioritized than the others
     ## @param wazuh.master.extraSpec.statefulSet Extra configuration for the wazuh master statefulset
