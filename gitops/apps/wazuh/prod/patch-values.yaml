@@ -1,7 +1,43 @@
+  # gitops/apps/wazuh/prod/patch-values.yaml
+
+  # Use an external OpenSearch instance
+  externalIndexer:
+    enabled: true
+    host: "https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com"
+    port: 25060
+
+  # Disable the internal indexer
+  indexer:
+    enabled: false
+
+  # Dashboard configuration
+  dashboard:
+    # Connect to the external OpenSearch
+    host: "0.0.0.0"
+    port: 5601
+    opensearch:
+      hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
+      ssl:
+        verificationMode: none
+      username: "doadmin"
+      # Reference the secret key here
+      passwordSecret:
+        name: opensearch-creds
+        key: opensearch-password
+
+    # SSL termination handled by Traefik/Ingress
+    server:
+      ssl:
+        enabled: false
+
+    # Base URL routing
+    uiSettings:
+      overrides:
+        defaultRoute: /app/wazuh
+
   ingress:
     enabled: true
-    labels: {} # traffic: external
-    annotations: 
+    annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
     ingressClassName: "{{name}}-traefik"
     pathType: Prefix
@@ -10,41 +46,7 @@
       - host: wazuh.cyberpartners.dk
         paths:
           - /
-    extraPaths: []
     tls:
-     - secretName: vault-tls
-       hosts:
-         - wazuh.cyberpartners.dk
-
-  externalIndexer:
-    enabled: true  # Enable external indexer
-    host: "https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com"
-    port: 25060
-
-  # Disable the built-in indexer since we're using external
-  indexer:
-    enabled: false
-
-  # Update dashboard configuration to use external OpenSearch
-  dashboard:
-    env:
-      - name: OPENSEARCH_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: opensearch-creds
-            key: opensearch-password
-    config: |
-      server.host: 0.0.0.0
-      server.port: 5601
-      opensearch.hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
-      opensearch.ssl.verificationMode: none
-      opensearch.username: "doadmin"
-      opensearch.password: "${OPENSEARCH_PASSWORD}"
-      opensearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
-      server.ssl.enabled: false
-      server.ssl.key: ""
-      server.ssl.certificate: ""
-      uiSettings.overrides.defaultRoute: /app/wazuh
-      opensearch_security.multitenancy.enabled: false
-      opensearch_security.readonly_mode.roles: ["kibana_read_only"]
-      server.defaultRoute: "/app/wazuh"
+      - secretName: vault-tls
+        hosts:
+          - wazuh.cyberpartners.dk
