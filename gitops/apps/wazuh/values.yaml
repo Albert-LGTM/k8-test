@@ -811,11 +811,28 @@ wazuh:
     ## @param wazuh.master.additionalVolumes Possibility to define additional volumes in the pod.
     ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
     ##
-    additionalVolumes: []
+    additionalVolumes:
+      # 1. DEFINE VOLUME: Load the CA certificate from the ConfigMap
+      - name: custom-ca-volume
+        configMap:
+          name: custom-ca-cert-cm # <-- CHANGE THIS if your ConfigMap has a different name
+          items:
+            - key: ca.crt          # <-- The key name inside the ConfigMap
+              path: ca.crt         # <-- The filename inside the mount
+
+    ## @param wazuh.master.additionalVolumeMounts Possibility to define additional volumeMounts vars in the pod.
+    ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
+    ##
+    additionalVolumeMounts:
+      # 2. MOUNT VOLUME: Make the certificate available to the container
+      - name: custom-ca-volume
+        mountPath: /usr/local/certs/ca.crt  # <-- Full path to the certificate file
+        subPath: ca.crt                     # <-- Mount only the single file
+    # additionalVolumes: []
     ## @param wazuh.master.additionalVolumeMounts Possibility to define additional volumeMounts in the pod.
     ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
     ##
-    additionalVolumeMounts: []
+    # additionalVolumeMounts: []
     ## Parameter to configure the securityContext of the pod.
     ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     ## @param wazuh.master.securityContext.capabilities.add Additional capabilities.
@@ -842,12 +859,10 @@ wazuh:
     ## @param wazuh.master.extraConf Gets appended to the wazuh.master.conf.
     ##
     extraConf: |
-      <remote>
-        <connection>
-          secure="yes"
-          ca_verification="no"
-        </connection>
-      </remote>
+      output.elasticsearch:
+        # Use the mounted path in the Filebeat/Wazuh output configuration
+        ssl.certificate_authorities: ["/usr/local/certs/ca.crt"]
+
     ## Extra configuration for the wazuh master
     ## @param wazuh.master.extraSpec This section is less prioritized than the others
     ## @param wazuh.master.extraSpec.statefulSet Extra configuration for the wazuh master statefulset
@@ -989,13 +1004,7 @@ wazuh:
       {{ include "wazuh.worker.conf" . }}
     ## @param wazuh.worker.extraConf Gets appended to the wazuh.worker.conf.
     ##
-    extraConf: |
-      <remote>
-        <connection>
-          secure="yes"
-          ca_verification="no"
-        </connection>
-      </remote>
+    extraConf: ""
 
     ## Extra configuration for the wazuh worker
     ## @param wazuh.worker.extraSpec This section is less prioritized than the others
