@@ -42,6 +42,19 @@
             - protocol: TCP
               port: 25060
 
+  master:
+    # This enables/configures the network policy specifically for the master node.
+    # The default setting is likely 'true', but we ensure it's configured here.
+    networkPolicy:
+      enabled: true
+      extraEgresses:
+        - to:
+          - ipBlock:
+              cidr: "198.199.122.49/32"
+          ports:
+            - protocol: TCP
+              port: 25060
+
     # Base URL routing
     uiSettings:
       overrides:
