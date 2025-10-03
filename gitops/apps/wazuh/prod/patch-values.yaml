@@ -1,50 +1,54 @@
-  # gitops/apps/wazuh/prod/patch-values.yaml
+# Use an external OpenSearch instance
+externalIndexer:
+  enabled: true
+  host: "https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com"
+  port: 25060
 
-  # Use an external OpenSearch instance
-  externalIndexer:
-    enabled: true
-    host: "https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com"
-    port: 25060
+# Disable the internal indexer
+indexer:
+  enabled: false
 
-  # Disable the internal indexer
-  indexer:
-    enabled: false
+# Dashboard configuration
+dashboard:
+  # Connect to the external OpenSearch
+  host: "0.0.0.0"
+  port: 5601
+  opensearch:
+    hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
+    ssl:
+      verificationMode: none
+    username: "doadmin"
+    # Reference the secret key here
+    passwordSecret:
+      name: opensearch-creds
+      key: opensearch-password
 
-  # Dashboard configuration
-  dashboard:
-    # Connect to the external OpenSearch
-    host: "0.0.0.0"
-    port: 5601
-    opensearch:
-      hosts: ["https://db-opensearch-nyc1-70566-do-user-11835246-0.i.db.ondigitalocean.com:25060"]
-      ssl:
-        verificationMode: none
-      username: "doadmin"
-      # Reference the secret key here
-      passwordSecret:
-        name: opensearch-creds
-        key: opensearch-password
+  # SSL termination handled by Traefik/Ingress
+  server:
+    ssl:
+      enabled: false
 
-    # SSL termination handled by Traefik/Ingress
-    server:
-      ssl:
-        enabled: false
+  # Network Policy configuration to allow outbound traffic to OpenSearch
+  networkPolicy:
+    enabled: true 
+    extraEgresses:
+      - to:
+        - ipBlock:
+            # Explicitly allow the egress to the OpenSearch IP on port 25060
+            cidr: "198.199.122.49/32"
+        ports:
+          - protocol: TCP
+            port: 25060
 
-    # Network Policy configuration to allow outbound traffic to OpenSearch
-    networkPolicy:
-      enabled: true 
-      extraEgresses:
-        - to:
-          - ipBlock:
-              # Explicitly allow the egress to the OpenSearch IP on port 25060
-              cidr: "198.199.122.49/32"
-          ports:
-            - protocol: TCP
-              port: 25060
+  # Base URL routing (MOVED HERE)
+  uiSettings:
+    overrides:
+      defaultRoute: /app/wazuh
 
+# Wazuh Core Configuration (REQUIRED PARENT KEY)
+wazuh:
+  # Manager Master Node Configuration (MOVED HERE)
   master:
-    # This enables/configures the network policy specifically for the master node.
-    # The default setting is likely 'true', but we ensure it's configured here.
     networkPolicy:
       enabled: true
       extraEgresses:
@@ -55,23 +59,19 @@
             - protocol: TCP
               port: 25060
 
-    # Base URL routing
-    uiSettings:
-      overrides:
-        defaultRoute: /app/wazuh
-
-  ingress:
-    enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production
-    ingressClassName: "{{name}}-traefik"
-    pathType: Prefix
-    activeService: true
-    hosts:
-      - host: wazuh.cyberpartners.dk
-        paths:
-          - /
-    tls:
-      - secretName: vault-tls
-        hosts:
-          - wazuh.cyberpartners.dk
+# Ingress for Dashboard (Kept at top level)
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  ingressClassName: "{{name}}-traefik"
+  pathType: Prefix
+  activeService: true
+  hosts:
+    - host: wazuh.cyberpartners.dk
+      paths:
+        - /
+  tls:
+    - secretName: vault-tls
+      hosts:
+        - wazuh.cyberpartners.dk
