@@ -30,6 +30,18 @@
       ssl:
         enabled: false
 
+  # Network Policy configuration to allow outbound traffic to OpenSearch
+  networkPolicy:
+    enabled: true 
+    extraEgresses:
+      - to:
+        - ipBlock:
+            # Explicitly allow the egress to the OpenSearch IP on port 25060
+            cidr: "198.199.122.49/32"
+        ports:
+          - protocol: TCP
+            port: 25060
+
     # Base URL routing
     uiSettings:
       overrides:
