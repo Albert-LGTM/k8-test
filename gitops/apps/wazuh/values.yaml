@@ -828,7 +828,7 @@ wazuh:
     ## @param wazuh.master.networkPolicy.enabled Specifies whether a NetworkPolicy should be created.
     ##
     networkPolicy:
-      enabled: true
+      enabled: false
     ## @param wazuh.master.storageSize Defines the size of the pvc used by the statefulset.
     ## @param wazuh.master.storageClass Defines the storageClass of the pvc used by the statefulset.
     ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner.
@@ -970,7 +970,7 @@ wazuh:
     ## @param wazuh.worker.networkPolicy.enabled Specifies whether a NetworkPolicy should be created.
     ##
     networkPolicy:
-      enabled: true
+      enabled: false
     ## @param wazuh.worker.storageSize Defines the size of the pvc used by the statefulset.
     ## @param wazuh.worker.storageClass Defines the storageClass of the pvc used by the statefulset.
     ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner.
