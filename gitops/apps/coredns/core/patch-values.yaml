@@ -1,0 +1,9 @@
+zoneFiles:
+  - filename: cyberpartners.db
+    domain: cyberpartners.dk
+    contents: |
+      $TTL 3600
+      @   IN SOA ns1.cyberpartners.dk. admin.cyberpartners.dk. 2025100301 7200 3600 1209600 3600
+          IN NS  ns1.cyberpartners.dk.
+      vault.cyberpartners.dk IN CNAME traefik-core-traefik.banjo-barb.ts.net.
+      wazuh.cyberpartners.dk IN CNAME traefik-core-traefik.banjo-barb.ts.net.

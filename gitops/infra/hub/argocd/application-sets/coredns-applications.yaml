@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: coredns-applications
+  namespace: argocd
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: ocm-placement-generator
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: core
+        requeueAfterSeconds: 30
+  template:
+    metadata:
+      name: "{{name}}-coredns"
+      labels:
+        apps.open-cluster-management.io/pull-to-ocm-managed-cluster: 'true'
+      annotations:
+        apps.open-cluster-management.io/ocm-managed-cluster: '{{name}}'
+        apps.open-cluster-management.io/ocm-managed-cluster-app-namespace: argocd
+    spec:
+      project: default
+      sources:
+      - repoURL: https://coredns.github.io/coredns
+        chart: coredns
+        targetRevision: '1.44.3'
+        helm:
+          valueFiles:
+          - $values/gitops/apps/coredns/values.yaml
+          - $values/gitops/apps/coredns/{{name}}/patch-values.yaml
+      - repoURL: 'https://github.com/Albert-LGTM/k8-test.git'
+        targetRevision: main
+        ref: values
+      destination:
+        server: '{{server}}'
+        namespace: kube-system
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=false
